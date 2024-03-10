@@ -65,9 +65,9 @@ CREATE TABLE classes (
     class_name VARCHAR(25) NOT NULL, 
     -- Needed to include important notes such as if a class is limited seating
     -- and there needs to be a lottery, or if there needs to be an OM
-    notes VARCHAR(200), 
+    comments VARCHAR(200), 
     -- General overview of the class
-    description VARCHAR(500), 
+    overview VARCHAR(500), 
     -- To connect to the professors table
     professor_id CHAR(7),
     -- Some common words or phrases to identify this class
@@ -107,4 +107,5 @@ CREATE TABLE professors (
     professor_name VARCHAR(40),
     department_name VARCHAR(30) NOT NULL, 
     PRIMARY KEY (professor_id, professor_name)
+    FOREIGN KEY (department_name) REFERENCES departments(department_name)
 );  

@@ -12,10 +12,21 @@ CREATE TABLE user_info (
 
     -- True for admin, False for students 
     is_admin BOOLEAN NOT NULL, 
-    salt CHAR(8) NOT NULL
+    salt CHAR(8) NOT NULL, 
 
     UNIQUE (user_id, password), 
     PRIMARY KEY (user_id)
+);
+
+/*
+Relates the department name to a class_id to allow for easy searching of all
+courses that are within the same department. 
+*/
+CREATE TABLE departments (
+    department_name VARCHAR(30), 
+    class_id VARCHAR(20),
+    PRIMARY KEY (department_name, class_id)
+   -- FOREIGN KEY (class_id) REFERENCES classes(class_id)
 );
 
 /*
@@ -35,10 +46,56 @@ CREATE TABLE students (
     department_name VARCHAR(30), 
 
     CHECK (grade IN (1, 2, 3, 4)), 
-    PRIMARY KEY (student_id),
+    PRIMARY KEY (student_id)
     -- Note, the institution needs to let students graduate in their major
     -- even if the major gets removed/updates. 
-    FOREIGN KEY (department_name) REFERENCES departments(department_name)
+    -- FOREIGN KEY (department_name) REFERENCES departments(department_name)
+);
+
+/*
+Relates the professor_id to a professor_name as well as what department they
+are in. 
+*/
+CREATE TABLE professors (
+    professor_id CHAR(7), 
+    professor_name VARCHAR(40),
+    department_name VARCHAR(30) NOT NULL, 
+    PRIMARY KEY (professor_id, professor_name)
+    -- FOREIGN KEY (department_name) REFERENCES departments(department_name)
+);  
+
+/* 
+This is the main table within this database, and houses all of the technical
+information required for any class. 
+*/
+CREATE TABLE classes (
+    class_id VARCHAR(20),
+    class_name VARCHAR(50) NOT NULL, 
+    -- Needed to include important notes such as if a class is limited seating
+    -- and there needs to be a lottery, or if there needs to be an OM
+    comments VARCHAR(200), 
+    -- General overview of the class
+    overview VARCHAR(500), 
+    -- To connect to the professors table
+    professor_id CHAR(7),
+    -- Some common words or phrases to identify this class
+    keywords VARCHAR(50), 
+    credits INT NOT NULL, 
+    -- Can be a max of 9.9
+    rating NUMERIC(2, 1),
+    review VARCHAR(500),
+    term INT NOT NULL, 
+    year YEAR NOT NULL,
+    -- The prereq can be a bunch of course_ids put together
+    prereq VARCHAR(50),
+    -- Either pass-fail or grades
+    grade_scheme VARCHAR(10), 
+
+    CHECK (term IN (1, 2, 3, 4)), 
+    PRIMARY KEY (class_id), 
+    FOREIGN KEY (professor_id) REFERENCES professors(professor_id) ON UPDATE 
+    CASCADE
+
 );
 
 /*
@@ -51,14 +108,14 @@ if a class is deleted/updated, sections needs the corresponding update.
 CREATE TABLE sections (
     -- sections are a weak-entity set, as multiple classes will share the 
     -- same section numbers, so they need class_id to help uniquely identify.
-    section_id INT
+    section_id INT, 
     class_id VARCHAR(20),
 
     -- Sometimes locations for sections are not defined upon creation.
-    location VARCHAR(20), 
+    class_location VARCHAR(20), 
     -- Necessary for description times (i.e. Monday/Wednesday 10:30-12:00 pm)
-    class_time VARCHAR(20) NOT NULL, 
-    recitation VARCHAR (20), 
+    class_time VARCHAR(20), 
+    recitation VARCHAR(30), 
     -- Sometimes TAs haven't been setup before a class/section is offered
     ta_name VARCHAR(30), 
     -- If capacity is NULL, then it essentially means the section is uncapped.
@@ -99,59 +156,5 @@ CREATE TABLE registered (
     -- the student from being in the class. This would mean that we are
     -- leaving a registration that isn't possible inside registered, that 
     -- can be handled with a procedure for this specific case. 
-    FOREIGN KEY (section_id) REFERENCES section(section_id) ON UPDATE CASCADE
+    FOREIGN KEY (section_id) REFERENCES sections(section_id) ON UPDATE CASCADE
 );
-
-/* 
-This is the main table within this database, and houses all of the technical
-information required for any class. 
-*/
-CREATE TABLE classes (
-    class_id VARCHAR(20),
-    class_name VARCHAR(25) NOT NULL, 
-    -- Needed to include important notes such as if a class is limited seating
-    -- and there needs to be a lottery, or if there needs to be an OM
-    comments VARCHAR(200), 
-    -- General overview of the class
-    overview VARCHAR(500), 
-    -- To connect to the professors table
-    professor_id CHAR(7),
-    -- Some common words or phrases to identify this class
-    keywords VARCHAR(50), 
-    credits INT NOT NULL, 
-    -- Can be a max of 9.9
-    rating NUMERIC(2, 1),
-    review VARCHAR(500),
-    term INT NOT NULL, 
-    year YEAR NOT NULL,
-    -- The prereq can be a bunch of course_ids put together
-    prereq VARCHAR(50),
-    -- Either pass-fail or grades
-    grade_scheme VARCHAR(10), 
-    PRIMARY KEY (class_id), 
-    FOREIGN KEY (professor_id) REFERENCES professors(professor_id) ON UPDATE 
-    CASCADE
-);
-
-/*
-Relates the department name to a class_id to allow for easy searching of all
-courses that are within the same department. 
-*/
-CREATE TABLE departments (
-    department_name VARCHAR(30), 
-    class_id VARCHAR(20),
-    PRIMARY KEY (department_name, class_id),
-    FOREIGN KEY (class_id) REFERENCES classes(class_id)
-);
-
-/*
-Relates the professor_id to a professor_name as well as what department they
-are in. 
-*/
-CREATE TABLE professors (
-    professor_id CHAR(7), 
-    professor_name VARCHAR(40),
-    department_name VARCHAR(30) NOT NULL, 
-    PRIMARY KEY (professor_id, professor_name)
-    FOREIGN KEY (department_name) REFERENCES departments(department_name)
-);  

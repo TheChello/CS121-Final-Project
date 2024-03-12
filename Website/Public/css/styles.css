@@ -5,44 +5,78 @@
  * This is the style.css page for the index.html page for final project. 
  */
 
+ #header-bar {
+    display: flex;
+    flex-direction: row;
+    font-family: Helvetica,  Arial, sans-serif;
+    font-size: 20pt;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-family: Helvetica,  Arial, sans-serif;
+    font-size: 20pt;
+    width: 60%;
+}
+
  #search-bar {
     margin-top: 10px;
     border: solid black 1px;
     border-radius: 5px;
     width: 70%;
-    height: 44px;
+    height: 40px;
     padding-left: 20px;
+    margin-right: 20px;
 }
 
 #header-bar a {
     margin-top: 15px;
     font-size: 15pt;
-    color: #808080;
+    color: #0F084B;
     border: none;
     background-color: white;
     width: 14%;
     text-align: center;
 }
+
+nav {
+    font-family: Helvetica,  Arial, sans-serif;
+    font-size: 30pt;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
   
 nav > ul {
-    padding-top: 10px;
     list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
 }
   
 nav > ul > li {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 80px;
+    padding-right: 80px;
     display: inline;
+    position: relative;
+    top: 50%;
 }
 
 nav a {
     font-size: 20pt;
-    color: #edede9;
+    color: #C2E7D9;
     text-decoration: none;
 }
 
 nav {
-    background-color: #6b705c;
+    background-color: #26408B;
     height: 50px;
 }
 

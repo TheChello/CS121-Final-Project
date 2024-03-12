@@ -17,7 +17,7 @@
      * then populating the screen with the products.
      */
     function init() {
-        getCategories();
+        createNavigationBar();
         initProductDisplay();
     }
 
@@ -26,79 +26,45 @@
      * calls a function to populate the product display.
      */
     async function initProductDisplay() {
-        try {
-            let url = BASE_URL + "products";
-            let resp = await fetch(url);
-            resp = checkStatus(resp);
-            const data = await resp.json();
-            populateProductView(data);
-        } catch (err) {
-            handleError(err);
+        let loggedIn = sessionStorage.getItem("logged-in");
+        if (loggedIn == "True") {
+            id("important-links").innerHTML = "";
+            let link1 = gen("div");
+            let text1 = gen("h2");
+            let textLink1 = gen("h2");
+            text1.textContent = "View and Sign Up for Classes"
+            textLink1.textContent = "Current Couses"
+            textLink1.href = "courses_offered.html";
+            link1.appendChild(text1)
+            link1.appendChild(textLink1)
+            id("important-links").appendChild(link1);
+
+            let link2 = gen("div");
+            let text2 = gen("h2");
+            let textLink2 = gen("h2");
+            text2.textContent = "View my Classes for Current Term"
+            textLink2.textContent = "MyClasses"
+            textLink2.href = "myclasses.html";
+            link2.appendChild(text2)
+            link2.appendChild(textLink2)
+            id("important-links").appendChild(link2);
+
+            let link3 = gen("div");
+            let text3 = gen("h2");
+            let textLink3 = gen("h2");
+            text3.textContent = "View my Current Credits"
+            textLink3.textContent = "MyCredits"
+            textLink3.href = "MyCredits.html";
+            link3.appendChild(text3)
+            link3.appendChild(textLink3)
+            id("important-links").appendChild(link3);
         }
-    }
-
-    /**
-     * Takes a JSON list of products, and for individual products, creates
-     * a product view and adds it to the display
-     * @param {Object} productLst - a list of products in JSON form
-     */
-    function populateProductView(productLst) {
-        id("product-display").innerHTML = "";
-        productLst.forEach((productInfo) => {
-            let newProduct = createElem(productInfo);
-            id("product-display").appendChild(newProduct);
-        });
-    }
-
-    /**
-     * Creates a product element to be added to home page given information
-     * in JSON format. Adds images, prices, and name of the product
-     * @param {Object} productInfo - product information in JSON format
-     * @returns {Object} - A div object to be added to screen
-     */
-    function createElem(productInfo) {
-        let newElm = gen("div");
-
-        let imgDiv = gen("div");
-
-        let img = gen("img");
-        img.src = productInfo.imgPath;
-        img.alt = productInfo.name;
-
-        imgDiv.appendChild(img);
-
-        let a = gen("a");
-        a.href = "product_view.html?category=" + productInfo.category + "&product=" + productInfo.name;
-        a.title = productInfo.name;
-        a.innerHTML = formatProductName(productInfo.name);
-
-        let price = gen("p");
-        if (productInfo.newPrice != "0") {
-            let saleTag = gen("span");
-            price.textContent = productInfo.newPrice;
-            saleTag.textContent = "Sale";
-            imgDiv.appendChild(saleTag);
-            img.classList.add("prod-image");
-            saleTag.classList.add("sale-tag");
-        } else {
-            price.textContent = productInfo.price;
+        else {
+            id("important-links").innerHTML = "";
+            let text = gen("h2");
+            text.textContent = "Please log in to access your classes";
+            id("important-links").appendChild(text);
         }
-
-        newElm.appendChild(imgDiv);
-        newElm.appendChild(a);
-        newElm.appendChild(price);
-
-        return newElm;
-    }
-
-    /**
-     * Displays the error message to the user
-     * @param {String} errMsg - error message in string format
-     */
-    function handleError(errMsg) {
-        let text = gen("h2");
-        text.textContent = errMsg;
-        id("product-display").appendChild(text);
     }
 
     init();

@@ -5,47 +5,77 @@
  * This is the style.css page for the index.html page for final project. 
  */
 
- #search-bar {
-    margin-top: 10px;
-    border: solid black 1px;
-    border-radius: 5px;
-    width: 70%;
-    height: 44px;
-    padding-left: 20px;
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    padding: 0px;
 }
 
-#header-bar a {
-    margin-top: 15px;
-    font-size: 15pt;
-    color: #808080;
-    border: none;
-    background-color: white;
-    width: 14%;
+header {
+    display: flex;
+    flex-direction: column;
+}
+
+#banner {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#banner > h1 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 80pt;
+    color: #0F084B;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+#banner {
+    background-color: #A6CFD5;
+    align-items: center;
     text-align: center;
 }
-  
-nav > ul {
-    padding-top: 10px;
-    list-style-type: none;
-}
-  
-nav > ul > li {
-    padding-left: 50px;
-    padding-right: 50px;
-    display: inline;
+
+#banner > h2 {
+    font-family: "Merriweather", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 45pt;
+    font-style: italic;
+    color: #26408B;
 }
 
-nav a {
-    font-size: 20pt;
-    color: #edede9;
-    text-decoration: none;
+#important-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: Helvetica,  Arial, sans-serif;
+    color: #26408B;
 }
 
-nav {
-    background-color: #6b705c;
-    height: 50px;
+#important-links > div {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
 }
 
-ul {
-    margin: 0px;
+#important-links h2 {
+    font-family: Helvetica,  Arial, sans-serif;
+    font-size: 30pt;
+    text-align: center;
 }
+
+footer {
+    text-align: center;
+    margin: 50px;
+}
+
+/* Helvetica, Arial, Sans-serif */

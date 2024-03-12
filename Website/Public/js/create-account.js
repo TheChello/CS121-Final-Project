@@ -18,14 +18,14 @@
      */
     function init() {
         createNavigationBar();
-        id("login-button").addEventListener("click", login);
+        id("signup-button").addEventListener("click", signUp);
     }
 
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function login() {
+    async function signUp() {
         let params = {username: qs("input[name='username']").value, 
         password: qs("input[name='password']").value,};
 

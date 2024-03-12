@@ -17,79 +17,47 @@
      * then populating the screen with the products.
      */
     function init() {
-        getCategories();
-        initProductDisplay();
+        createNavigationBar();
+        initDepartmentDisplay();
     }
 
+    function initDepartmentDisplay() {
+        id("department-links").innerHTML = "";
+        let lst = gen("ul");
+        lst.id = "department-list";
+        let location = window.location.toString().split("?")[1];
+        let category = location.split("=")[1];
+        getAllDepartments(category);
+    }
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function initProductDisplay() {
+    async function getAllDepartments(category) {
         try {
-            let url = BASE_URL + "products";
+            let url = BASE_URL + "departments";
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
-            populateProductView(data);
+            displayDepartments(data, category);
         } catch (err) {
             handleError(err);
         }
     }
 
-    /**
-     * Takes a JSON list of products, and for individual products, creates
-     * a product view and adds it to the display
-     * @param {Object} productLst - a list of products in JSON form
-     */
-    function populateProductView(productLst) {
-        id("product-display").innerHTML = "";
-        productLst.forEach((productInfo) => {
-            let newProduct = createElem(productInfo);
-            id("product-display").appendChild(newProduct);
+    function displayDepartments(departmentLst, category) {
+        let lst = id("department-list");
+        departmentLst.forEach((department) => {
+            let item = gen("li");
+            let a = gen("a");
+            let text = document.createTextNode(category);
+            a.appendChild(text);
+            a.ref = category.toLowerCase() + "_department.html?category=" + category + "&department=" + department;
+            a.appendChild(text);
+            lst.appendChild(item);
         });
     }
 
-    /**
-     * Creates a product element to be added to home page given information
-     * in JSON format. Adds images, prices, and name of the product
-     * @param {Object} productInfo - product information in JSON format
-     * @returns {Object} - A div object to be added to screen
-     */
-    function createElem(productInfo) {
-        let newElm = gen("div");
-
-        let imgDiv = gen("div");
-
-        let img = gen("img");
-        img.src = productInfo.imgPath;
-        img.alt = productInfo.name;
-
-        imgDiv.appendChild(img);
-
-        let a = gen("a");
-        a.href = "product_view.html?category=" + productInfo.category + "&product=" + productInfo.name;
-        a.title = productInfo.name;
-        a.innerHTML = formatProductName(productInfo.name);
-
-        let price = gen("p");
-        if (productInfo.newPrice != "0") {
-            let saleTag = gen("span");
-            price.textContent = productInfo.newPrice;
-            saleTag.textContent = "Sale";
-            imgDiv.appendChild(saleTag);
-            img.classList.add("prod-image");
-            saleTag.classList.add("sale-tag");
-        } else {
-            price.textContent = productInfo.price;
-        }
-
-        newElm.appendChild(imgDiv);
-        newElm.appendChild(a);
-        newElm.appendChild(price);
-
-        return newElm;
-    }
 
     /**
      * Displays the error message to the user
@@ -98,7 +66,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("department-links").appendChild(text);
     }
 
     init();

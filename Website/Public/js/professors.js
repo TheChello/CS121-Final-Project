@@ -20,20 +20,20 @@
         createNavigationBar();
         let location = window.location.toString().split("?")[1];
         let department = location.split("=")[1];
-        initReviewsDisplay(department);
+        initProfessorsDisplay(department);
     }
 
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function initReviewsDisplay(department) {
+    async function initProfessorsDisplay(department) {
         try {
-            let url = BASE_URL + `departments/reviews?department=${department}`;
+            let url = BASE_URL + `departments/professors?department=${department}`;
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
-            populateReviewsList(data);
+            populateProfessorList(data);
         } catch (err) {
             handleError(err);
         }
@@ -44,11 +44,11 @@
      * a product view and adds it to the display
      * @param {Object} productLst - a list of products in JSON form
      */
-    function populateReviewsList(classLst) {
-        id("classes-reviews").innerHTML = "";
-        classLst.forEach((classItem) => {
-            let newClass = createElem(classItem);
-            id("classes-reviews").appendChild(newClass);
+    function populateProfessorList(professorLst) {
+        id("department-professors").innerHTML = "";
+        professorLst.forEach((professorItem) => {
+            let professorDiv = createElem(professorItem);
+            id("department-professors").appendChild(professorDiv);
         });
     }
 
@@ -58,38 +58,18 @@
      * @param {Object} productInfo - product information in JSON format
      * @returns {Object} - A div object to be added to screen
      */
-    function createElem(classInfo) {
-        let classDiv = gen("div");
+    function createElem(professorInfo) {
+        let professorDiv = gen("div");
 
-        let classID = gen("h1");
-        classID.textContent = classInfo.class_id;
-        classDiv.appendChild(classID);
+        let professorName = gen("h1");
+        professorName.textContent = professorInfo.professor_name;
+        professorDiv.appendChild(professorName);
 
-        let className = gen("h2");
-        className.textContent = classInfo.class_name;
-        classDiv.appendChild(className);
+        let classesName = gen("h2");
+        classesName.textContent = professorInfo.class_name;
+        classDiv.appendChild(classesName);
 
-        let classUnits = gen("h3");
-        classUnits.textContent = classInfo.term + " | " + classInfo.credits;
-        classDiv.appendChild(classUnits);
-
-        let ratings = gen("h4");
-        ratings.textContent = classInfo.rating;
-        classDiv.appendChild(ratings);
-
-        let reviews = gen("p");
-        reviews.textContent = classInfo.reviews;
-        classDiv.appendChild(reviews);
-
-        let instructor = gen("h2");
-        instructor.textContent = classInfo.professor_name;
-        classDiv.appendChild(instructor);
-
-        let keywords = gen("h2");
-        keywords.textContent = classInfo.keywords;
-        classDiv.appendChild(keywords);
-
-        return classDiv;
+        return professorDiv;
     }
 
     /**

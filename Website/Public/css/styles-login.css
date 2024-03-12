@@ -5,47 +5,71 @@
  * This is the style.css page for the index.html page for final project. 
  */
 
- #search-bar {
-    margin-top: 10px;
-    border: solid black 1px;
-    border-radius: 5px;
-    width: 70%;
-    height: 44px;
-    padding-left: 20px;
+ body {
+    margin: 0;
 }
 
-#header-bar a {
-    margin-top: 15px;
-    font-size: 15pt;
-    color: #808080;
-    border: none;
-    background-color: white;
-    width: 14%;
+main {
+    display: flex;
+    flex-direction: column;
     text-align: center;
 }
-  
-nav > ul {
-    padding-top: 10px;
-    list-style-type: none;
-}
-  
-nav > ul > li {
-    padding-left: 50px;
-    padding-right: 50px;
-    display: inline;
+
+h1 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 30pt;
+    color: #0F084B;
 }
 
-nav a {
+#login-form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+#login-form label {
+    font-family: "Merriweather", sans-serif;
     font-size: 20pt;
-    color: #edede9;
+    color: #26408B;
+    margin: 10px;
+}
+
+#login-form input {
+    font-family: "Merriweather", sans-serif;
+    margin: 10px;
+    width: 150px;
+    height: 20px;
+}
+
+#buttons-bar {
+    font-family: "Merriweather", sans-serif;
+    display: flex;
+    flex-direction: row;
+    width: 15%;
+    justify-content: space-between;
+    margin: 20px;
+    font-size: 15pt;
+    align-items: center;
+    text-align: center;
+}
+
+#buttons-bar > a {
+    margin: 10px;
+    color: #0F084B;
+}
+
+#login-button {
+    font-family: "Merriweather", sans-serif;
+    font-size: 15pt;
+    color: #0F084B;
+    margin: 10px;
+    background-color: white;
+    border: None;
+}
+
+a {
     text-decoration: none;
-}
-
-nav {
-    background-color: #6b705c;
-    height: 50px;
-}
-
-ul {
-    margin: 0px;
 }

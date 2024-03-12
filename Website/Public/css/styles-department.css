@@ -1,0 +1,26 @@
+nav > ul {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+  
+ul > li {
+    padding-left: 80px;
+    padding-right: 80px;
+    display: inline;
+    position: relative;
+    top: 50%;
+}
+
+a {
+    font-size: 20pt;
+    color: #C2E7D9;
+    text-decoration: none;
+}
+
+ul {
+    margin: 0px;
+}

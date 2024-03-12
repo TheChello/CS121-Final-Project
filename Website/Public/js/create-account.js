@@ -26,11 +26,13 @@
      * calls a function to populate the product display.
      */
     async function signUp() {
-        let params = {username: qs("input[name='username']").value, 
+        let params = {firstName: qs("input[name='first-name']").value,
+        lastName: qs("input[name='last-name']").value,
+        username: qs("input[name='username']").value, 
         password: qs("input[name='password']").value,};
 
     try {
-        let resp = await fetch(BASE_URL + "login", { 
+        let resp = await fetch(BASE_URL + "signup", { 
             headers: {
                 "Content-Type": "application/json",
             },

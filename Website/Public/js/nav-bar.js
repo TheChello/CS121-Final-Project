@@ -6,7 +6,7 @@
  * across all of the html pages
  */
 
- const NAVIGATION_BAR = ["Departments", "Professors", "Courses", "TQFRs", "MyClasses", "MyCredits"];
+ const NAVIGATION_BAR = ["Departments", "Professors", "Courses", "Reviews", "MyClasses", "MyCredits"];
  
  /**
   * This function creates a category bar given categories in a list
@@ -46,6 +46,11 @@
          }
          else if (category == "Courses") {
             a.href = "courses_offered.html";
+            item.appendChild(a);
+            list.appendChild(item);
+         }
+         else if (category == "lasses") {
+            a.href = "departments.html" + "?path=classes";
             item.appendChild(a);
             list.appendChild(item);
          }

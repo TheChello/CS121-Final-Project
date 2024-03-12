@@ -326,6 +326,40 @@ async function authenticateUser(username, password, db) {
   return result;
 }
 
+app.post("/signup", checkLogin, async (req, res, next) => {
+  let firstName = req.body.firstName;
+  let lastName = req.body.lastName;
+  let username = req.body.username;
+  let password = req.body.password;
+  if (!(firstName && lastName && username && password)) {
+    res.status(CLIENT_ERR_CODE);
+    next(Error("Missing information"));
+  } else {
+    let db;
+    try {
+      db = await getDB(); // don't establish connection until we need to.
+      let userid = await addNewUser(firstName, lastName, username, password, db);
+      if (userid) {
+        res.type("text");
+        res.send(`Successfully created account!`);
+      } else {
+        res.status(401).send("Invalid login credentials.");
+      }
+    } catch (err) {
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
+    if (db) { 
+      db.end();
+    }
+  }
+});
+
+async function addNewUser(firstName, lastName, username, password, db) {
+  let procedure = "CALL PROCEDURE ...";
+  let result = await db.query(procedure, [firstName, lastName, username, password]);
+  return result;
+}
+
 function checkLogin(req, res, next) {
   if (req.cookies["logged_in"] && req.cookies.userid) {
     res.type("text");

@@ -17,21 +17,23 @@
      * then populating the screen with the products.
      */
     function init() {
-        getCategories();
-        initProductDisplay();
+        createNavigationBar();
+        let location = window.location.toString().split("?")[1];
+        let department = location.split("=")[1];
+        initClassesDisplay(department);
     }
 
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function initProductDisplay() {
+    async function initClassesDisplay(department) {
         try {
-            let url = BASE_URL + "products";
+            let url = BASE_URL + `departments/classes?department=${department}`;
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
-            populateProductView(data);
+            populateClassesList(data);
         } catch (err) {
             handleError(err);
         }
@@ -42,11 +44,11 @@
      * a product view and adds it to the display
      * @param {Object} productLst - a list of products in JSON form
      */
-    function populateProductView(productLst) {
-        id("product-display").innerHTML = "";
-        productLst.forEach((productInfo) => {
-            let newProduct = createElem(productInfo);
-            id("product-display").appendChild(newProduct);
+    function populateClassesList(classLst) {
+        id("department-classes").innerHTML = "";
+        classLst.forEach((classItem) => {
+            let newClass = createElem(classItem);
+            id("department-classes").appendChild(newClass);
         });
     }
 
@@ -56,39 +58,38 @@
      * @param {Object} productInfo - product information in JSON format
      * @returns {Object} - A div object to be added to screen
      */
-    function createElem(productInfo) {
-        let newElm = gen("div");
+    function createElem(classInfo) {
+        let classDiv = gen("div");
 
-        let imgDiv = gen("div");
+        let classID = gen("h1");
+        classID.textContent = classInfo.class_id;
+        classDiv.appendChild(classID);
 
-        let img = gen("img");
-        img.src = productInfo.imgPath;
-        img.alt = productInfo.name;
+        let className = gen("h2");
+        className.textContent = classInfo.class_name;
+        classDiv.appendChild(className);
 
-        imgDiv.appendChild(img);
+        let classUnits = gen("h3");
+        classUnits.textContent = classInfo.term + " | " + classInfo.credits;
+        classDiv.appendChild(classUnits);
 
-        let a = gen("a");
-        a.href = "product_view.html?category=" + productInfo.category + "&product=" + productInfo.name;
-        a.title = productInfo.name;
-        a.innerHTML = formatProductName(productInfo.name);
+        let prereqs = gen("h4");
+        prereqs.textContent = classInfo.prereq;
+        classDiv.appendChild(prereqs);
 
-        let price = gen("p");
-        if (productInfo.newPrice != "0") {
-            let saleTag = gen("span");
-            price.textContent = productInfo.newPrice;
-            saleTag.textContent = "Sale";
-            imgDiv.appendChild(saleTag);
-            img.classList.add("prod-image");
-            saleTag.classList.add("sale-tag");
-        } else {
-            price.textContent = productInfo.price;
-        }
+        let description = gen("p");
+        description.textContent = classInfo.overview;
+        classDiv.appendChild(description);
 
-        newElm.appendChild(imgDiv);
-        newElm.appendChild(a);
-        newElm.appendChild(price);
+        let instructor = gen("h2");
+        instructor.textContent = classInfo.professor_name;
+        classDiv.appendChild(instructor);
 
-        return newElm;
+        let keywords = gen("h2");
+        keywords.textContent = classInfo.keywords;
+        classDiv.appendChild(keywords);
+
+        return classDiv;
     }
 
     /**

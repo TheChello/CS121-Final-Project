@@ -52,7 +52,7 @@
             let a = gen("a");
             let text = document.createTextNode(category);
             a.appendChild(text);
-            a.ref = category.toLowerCase() + "_department.html?category=" + category + "&department=" + department;
+            a.ref = category.toLowerCase() + "_department.html?department=" + department;
             a.appendChild(text);
             lst.appendChild(item);
         });

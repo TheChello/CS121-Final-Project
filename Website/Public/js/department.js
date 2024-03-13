@@ -30,7 +30,7 @@
         let location = window.location.toString().split("?")[1];
         let category = location.split("=")[1];
         // getAllDepartments(category);
-        displayDepartments(tmpDept, category);
+        displayDepartments(tmpDept, "classes");
     }
     /**
      * Makes a fetch call to the API to get all of the products, then

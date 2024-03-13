@@ -89,8 +89,8 @@ DELIMITER ;
 -- Add at least two users into your user_info table so that when we run this file,
 -- we will have examples users in the database.
 
-CALL sp_add_user('Yunha', 'hello');
-CALL sp_add_user('Shrey', 'goodbye');
+-- CALL sp_add_user('Yunha', 'hello');
+-- CALL sp_add_user('Shrey', 'goodbye');
 
 -- [Problem 1d]
 -- Create a procedure sp_change_password to generate a new salt and change the given

@@ -4,7 +4,7 @@ const app = express();
 const multer = require("multer");
 const mysql = require("promise-mysql");
 const cookieParser = require("cookie-parser");
-const bcrypt = require("bcrypt"); // for optional password hashing; see brcrypt docs
+// const bcrypt = require("bcrypt"); // for optional password hashing; see brcrypt docs
 
 // To handle different POST formats
 app.use(express.urlencoded({ extended: true }))
@@ -43,8 +43,9 @@ app.get("/departments", async (req, res) => {
   });
 
 async function getDepartments(db) {
-    let query = "TODO: Need to get all of the departments";
+    let query = "SELECT DISTINCT department_name FROM departments";
     let rows = await db.query(query);
+    console.log(rows);
     return rows;
   }
 
@@ -374,9 +375,9 @@ async function getDB() {
     // Variables for connections to the database.
     host: "localhost",      
     port: "8889",          
-    user: "root",         
-    password: "root",    
-    database: "Tration"    
+    user: "appclient",         
+    password: "clientpw",    
+    database: "tration"    
   });
   return db;
 }

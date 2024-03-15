@@ -85,7 +85,7 @@ CREATE TABLE classes (
     rating NUMERIC(2, 1),
     review VARCHAR(500),
     term INT NOT NULL, 
-    year YEAR NOT NULL,
+    cur_year YEAR NOT NULL,
     -- The prereq can be a bunch of course_ids put together
     prereq VARCHAR(50),
     -- Either pass-fail or grades
@@ -158,3 +158,6 @@ CREATE TABLE registered (
     -- can be handled with a procedure for this specific case. 
     FOREIGN KEY (section_id) REFERENCES sections(section_id) ON UPDATE CASCADE
 );
+
+CREATE INDEX idx_class_name ON classes(class_name);
+CREATE INDEX idx_grade ON students(grade);

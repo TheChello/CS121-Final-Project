@@ -1,0 +1,17 @@
+** NOTE **:
+Putting expressions here for now, will prob latex them for final final 
+
+credits_per_department <-- department_nameG SUM(credits) as total_credits ((registered⋈ classes ⋈ departments))
+Π department_name, total_credits (credits_per_department)
+
+comp_classes <-- Π class_id (σ department_name= ComputerScience (departments))
+Π class_id, class_name, review (classes⋈comp_classes)
+
+
+# Need help on the update statement maybe 
+workload <-- student_id Gsum(credits) as total_credits (σ student_id='1234567'
+ (registered⋈classes))
+schedule_view ← schedule_view ⋈ workload
+
+
+​

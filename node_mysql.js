@@ -374,9 +374,9 @@ async function getDB() {
   let db = await mysql.createConnection({
     // Variables for connections to the database.
     host: "localhost",      
-    port: "8889",          
-    user: "appclient",         
-    password: "clientpw",    
+    port: "3306",          
+    user: "appadmin",         
+    password: "adminpw",    
     database: "tration"    
   });
   return db;

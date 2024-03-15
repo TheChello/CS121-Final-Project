@@ -4,4 +4,4 @@ CREATE USER 'appclient'@'localhost' IDENTIFIED BY 'clientpw';
 GRANT ALL PRIVILEGES ON tration.* TO 'appadmin'@'localhost';
 GRANT SELECT ON tration.* TO 'appclient'@'localhost';
 GRANT INSERT ON tration.* TO 'appclient'@'localhost';
--- FLUSH PRIVILEGES;
+FLUSH PRIVILEGES;

@@ -1,5 +1,14 @@
 -- Worked With: Yunha Jo
 
+-- DROP TABLE COMMANDS:
+DROP TABLE IF EXISTS registered;
+DROP TABLE IF EXISTS sections;
+DROP TABLE IF EXISTS classes;
+DROP TABLE IF EXISTS professors;
+DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS user_info;
+
 /*
 Stores information for both admins and students, which will allow us to 
 authenticate future logins and 
@@ -26,7 +35,6 @@ CREATE TABLE departments (
     department_name VARCHAR(30), 
     class_id VARCHAR(20),
     PRIMARY KEY (department_name, class_id)
-   -- FOREIGN KEY (class_id) REFERENCES classes(class_id)
 );
 
 /*
@@ -47,9 +55,6 @@ CREATE TABLE students (
 
     CHECK (grade IN (1, 2, 3, 4)), 
     PRIMARY KEY (student_id)
-    -- Note, the institution needs to let students graduate in their major
-    -- even if the major gets removed/updates. 
-    -- FOREIGN KEY (department_name) REFERENCES departments(department_name)
 );
 
 /*
@@ -61,7 +66,6 @@ CREATE TABLE professors (
     professor_name VARCHAR(40),
     department_name VARCHAR(30) NOT NULL, 
     PRIMARY KEY (professor_id, professor_name)
-    -- FOREIGN KEY (department_name) REFERENCES departments(department_name)
 );  
 
 /* 
@@ -151,13 +155,17 @@ CREATE TABLE registered (
     -- If a class gets removed, we would want to remove it from registered, 
     -- same as if it gets updated. 
     FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE 
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE, 
     -- If a section_id gets deleted, then we wouldn't want to just remove
     -- the student from being in the class. This would mean that we are
     -- leaving a registration that isn't possible inside registered, that 
-    -- can be handled with a procedure for this specific case. 
+    -- -- can be handled with a procedure for this specific case. 
     FOREIGN KEY (section_id) REFERENCES sections(section_id) ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_class_name ON classes(class_name);
-CREATE INDEX idx_grade ON students(grade);
+CREATE INDEX idx_class_name ON classes(class_id, class_name);
+-- ^ Above is tested and in doc, the one below isn't yet
+-- CREATE INDEX idx_grade ON students(grade);
+
+-- Query for idx_class_name (in reflection as well): 
+-- SELECT class_id, class_name from classes where class_name like 'Intro%';

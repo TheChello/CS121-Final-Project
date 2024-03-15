@@ -1,16 +1,16 @@
-﻿class_id,class_name,comments,overview,professor_id,keywords,credits ,rating,review,term,year,prereq,grades_scheme
-CS 001,Introduction to Computer Programming,,,7FeMOiV,computer,9,3,,3,2024,,PASS-FAIL
-CS 003,Introduction to Software Design,,,NaMRiD5,design,9,5,,3,2024,CS 001,LETTER
+﻿class_id,class_name,comments,overview,professor_id,keywords,credits,rating,review,term,year,prereq,grades_scheme
+CS 001,Introduction to Computer Programming,,,7FeMOiV,computer,9,3,amazing,3,2024,,PASS-FAIL
+CS 003,Introduction to Software Design,,,NaMRiD5,design,9,5,cool,3,2024,CS 001,LETTER
 Ma/CS 006C,Introduction to Discrete Mathematics,taught concurrently with Ma 106c,,07Z87hX,discrete,9,5,,3,2024,,
 EE/CS 010B,Introduction to Digital Logic and Embedded Systems,,,dNeqzvV,digital logic,6,4,,3,2024,,
 CS 011,Computer Language Lab: Rust Track,max enrollment: 10 students between CS 011 and CS 111,,qU4ffIA,Rust,3,1,,3,2024,,PASS-FAIL
 CS 012,Student-Taught Topics in Computing,Tensorflow,,qU4ffIA,student-taught,3,2,,3,2024,,PASS-FAIL
-CS 038,Algorithms,,,mDVvyPo,algorithms,9,5,,3,2024,,
+CS 038,Algorithms,,,mDVvyPo,algorithms,9,5,fascinating,3,2024,,
 CS 101,Database System Implementation,Enrollment only by instructor's permission / not open to general  enrollment,,Vi5459O,database,3,1,,3,2024,,LETTER
-Ma/CS 106C ,Introduction to Discrete Mathematics,taught concurrently with Ma/CS 006c,,07Z87hX,discrete,9,2,,3,2024,,
+Ma/CS 106C,Introduction to Discrete Mathematics,taught concurrently with Ma/CS 006c,,07Z87hX,discrete,9,2,,3,2024,,
 CS 111,Graduate Programming Practicum: Rust track,max enrollment: 10 students between CS 011 and CS 111,,qU4ffIA,Rust,3,4,,3,2024,,PASS-FAIL
 CS 115,Functional Programming,,,qU4ffIA,functional,9,5,,3,2024,,LETTER
-CS 124,Operating Systems,,,Vi5459O,operating,12,1,,3,2024,,
+CS 124,Operating Systems,,,Vi5459O,operating,12,1,lots of work,3,2024,,
 ME/CS/EE 129,Experimental Robotics,,,C88PkXW,robotics,9,3,,3,2024,,
 CS 132,Web Development,,,7FeMOiV,web,9,4,,3,2024,,
 CS 137,Real-World Algorithm Implementation,,,NaMRiD5,real-world,12,4,,3,2024,,LETTER

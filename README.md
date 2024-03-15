@@ -6,3 +6,6 @@ professors and admins
 - Organized the repository
 - Added html files and css files - so much styling to do
 - TODOs: create js files, create nodes_mysql.js, update styles bruhhhhh
+
+# Need to go through Github and do this also instructions to say where we 
+# got the date from 

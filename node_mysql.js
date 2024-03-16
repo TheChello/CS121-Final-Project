@@ -64,11 +64,13 @@ function parseDepartments(departmentRows) {
 app.get("/departments/classes", async (req, res) => {
     let db;
     try {
+      console.log("classes");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
       let deparmentClasses = await getClassesDepartment(department, db);
       let result = JSON.parse(JSON.stringify(deparmentClasses));
+      console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -80,11 +82,11 @@ app.get("/departments/classes", async (req, res) => {
   });
 
 async function getClassesDepartment(department, db) {
-    // let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
-    // JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
-    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM \
-    FROM classes c NATURAL JOIN departments d \
-    WHERE d.department_name WHERE d.department_name = ?;";
+    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
+    JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
+    // let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM \
+    // FROM classes c NATURAL JOIN departments d \
+    // WHERE d.department_name WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     console.log(rows);
     return rows;
@@ -98,6 +100,7 @@ async function getClassesDepartment(department, db) {
 app.get("/departments/professors", async (req, res) => {
     let db;
     try {
+      console.log("professors");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
@@ -115,15 +118,15 @@ app.get("/departments/professors", async (req, res) => {
   });
 
 async function getDepartmentProfessors(db, department) {
-    // let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
-    // FROM professors p \
-    // JOIN classes c ON p.professor_id = c.professor_id \
-    // JOIN departments d ON p.department_name = d.department_name \
-    // WHERE d.department_name = 'Computer Science';";
     let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
     FROM professors p \
-    FROM professors p NATURAL JOIN classes c NATURAL JOIN departments d \
-    WHERE d.department_name = ?;";
+    JOIN classes c ON p.professor_id = c.professor_id \
+    JOIN departments d ON p.department_name = d.department_name \
+    WHERE d.department_name = 'Computer Science';";
+    // let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
+    // FROM professors p \
+    // FROM professors p NATURAL JOIN classes c NATURAL JOIN departments d \
+    // WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     return rows;
   }
@@ -140,7 +143,9 @@ app.get("/classes-current", async (req, res) => {
     try {
       db = await getDB();
       let currentClasses = await getDepartmentClasses(db);
-      res.json(currentClasses);
+      let result = JSON.parse(JSON.stringify(currentClasses));
+      console.log(result);
+      res.json(result);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -151,6 +156,7 @@ app.get("/classes-current", async (req, res) => {
   });
 
 async function getDepartmentClasses(db) {
+    console.log("calling function");
     let query = "SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
     FROM classes c \
     NATURAL JOIN sections s \
@@ -193,9 +199,12 @@ app.get("/departments/reviews", async (req, res) => {
     let db;
     try {
       db = await getDB();
-      department = req.query["department"]
+      let tmp = req.query["department"];
+      let department = tmp.replaceAll("_", " ");
       let departmentReviews = await getDepartmentReviews(db, department);
-      res.json(departmentReviews);
+      let result = JSON.parse(JSON.stringify(departmentReviews));
+      console.log(result);
+      res.json(result);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -206,15 +215,15 @@ app.get("/departments/reviews", async (req, res) => {
   });
 
 async function getDepartmentReviews(db, department) {
+    console.log("Calling function");
+    console.log(department);
     let query = "SELECT class_id, class_name, review \
     FROM classes \
     WHERE class_id IN ( \
         SELECT class_id \
         FROM departments \
-        WHERE department_name = ?"
-    );
-    ;
-    let rows = await db.query(query);
+        WHERE department_name = ?);";
+    let rows = await db.query(query, [department]);
     return rows;
   }
 

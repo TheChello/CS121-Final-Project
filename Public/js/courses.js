@@ -79,9 +79,9 @@
         classRecitation.textContent = courseInfo.recitation;
         courseDiv.appendChild(classRecitation);
 
-        let classCapacity = gen("h2");
-        classCapacity.textContent = courseInfo.capacity;
-        courseDiv.appendChild(classCapacity);
+        // let classCapacity = gen("h2");
+        // classCapacity.textContent = courseInfo.capacity;
+        // courseDiv.appendChild(classCapacity);
 
         let addButton = gen("button");
         addButton.id = courseInfo.class_id;
@@ -89,7 +89,7 @@
         addButton.addEventListener("click", addToCart);
         courseDiv.appendChild(addButton);
 
-        return newElm;
+        return courseDiv;
     }
 
     async function addToCart() {
@@ -135,7 +135,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("all-courses").appendChild(text);
     }
 
     init();

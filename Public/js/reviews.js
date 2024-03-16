@@ -69,25 +69,9 @@
         className.textContent = classInfo.class_name;
         classDiv.appendChild(className);
 
-        let classUnits = gen("h3");
-        classUnits.textContent = classInfo.term + " | " + classInfo.credits;
-        classDiv.appendChild(classUnits);
-
-        let ratings = gen("h4");
-        ratings.textContent = classInfo.rating;
-        classDiv.appendChild(ratings);
-
         let reviews = gen("p");
         reviews.textContent = classInfo.reviews;
         classDiv.appendChild(reviews);
-
-        let instructor = gen("h2");
-        instructor.textContent = classInfo.professor_name;
-        classDiv.appendChild(instructor);
-
-        let keywords = gen("h2");
-        keywords.textContent = classInfo.keywords;
-        classDiv.appendChild(keywords);
 
         return classDiv;
     }
@@ -99,7 +83,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("classes-reviews").appendChild(text);
     }
 
     init();

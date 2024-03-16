@@ -16,14 +16,14 @@ authenticate future logins and
 CREATE TABLE user_info (
     -- Will be generated to match whether or not user is_admin or not
     user_id CHAR(7), 
-    password VARCHAR(10) NOT NULL, 
-    name VARCHAR(50) NOT NULL,
+    password_hash VARCHAR(10) NOT NULL, 
+    user_name VARCHAR(50) NOT NULL,
 
     -- True for admin, False for students 
     is_admin BOOLEAN NOT NULL, 
     salt CHAR(8) NOT NULL, 
 
-    UNIQUE (user_id, password), 
+    UNIQUE (user_id, password_hash), 
     PRIMARY KEY (user_id)
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE students (
     student_id  CHAR(7),
     -- This can be 1-4 to indicate Freshmen, Sophmore, Junior, Senior
     grade INT NOT NULL, 
-    name VARCHAR(50) NOT NULL, 
+    student_name VARCHAR(50) NOT NULL, 
 
     -- Essentially indicates Major, can be Null for Freshmen
     department_name VARCHAR(30), 

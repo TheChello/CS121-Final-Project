@@ -17,21 +17,21 @@
      * then populating the screen with the products.
      */
     function init() {
-        getCategories();
-        initProductDisplay();
+        createNavigationBar();
+        initCoursesDisplay();
     }
 
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function initProductDisplay() {
+    async function initCoursesDisplay() {
         try {
-            let url = BASE_URL + "products";
+            let url = BASE_URL + "classes-current";
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
-            populateProductView(data);
+            populateCoursesView(data);
         } catch (err) {
             handleError(err);
         }
@@ -42,11 +42,11 @@
      * a product view and adds it to the display
      * @param {Object} productLst - a list of products in JSON form
      */
-    function populateProductView(productLst) {
-        id("product-display").innerHTML = "";
-        productLst.forEach((productInfo) => {
-            let newProduct = createElem(productInfo);
-            id("product-display").appendChild(newProduct);
+    function populateCoursesView(courseLst) {
+        id("all-courses").innerHTML = "";
+        courseLst.forEach((courseInfo) => {
+            let newCourses = createElem(courseInfo);
+            id("all-courses").appendChild(newCourses);
         });
     }
 
@@ -56,39 +56,76 @@
      * @param {Object} productInfo - product information in JSON format
      * @returns {Object} - A div object to be added to screen
      */
-    function createElem(productInfo) {
-        let newElm = gen("div");
+    function createElem(courseInfo) {
+        let courseDiv = gen("div");
 
-        let imgDiv = gen("div");
+        let classesID = gen("h2");
+        classesID.textContent = courseInfo.class_id;
+        courseDiv.appendChild(classesID);
 
-        let img = gen("img");
-        img.src = productInfo.imgPath;
-        img.alt = productInfo.name;
+        let classesName = gen("h2");
+        classesName.textContent = courseInfo.class_name;
+        courseDiv.appendChild(classesName);
 
-        imgDiv.appendChild(img);
+        let location = gen("h2");
+        location.textContent = courseInfo.location;
+        courseDiv.appendChild(location);
 
-        let a = gen("a");
-        a.href = "product_view.html?category=" + productInfo.category + "&product=" + productInfo.name;
-        a.title = productInfo.name;
-        a.innerHTML = formatProductName(productInfo.name);
+        let classTime = gen("h2");
+        classTime.textContent = courseInfo.class_time;
+        courseDiv.appendChild(classTime);
 
-        let price = gen("p");
-        if (productInfo.newPrice != "0") {
-            let saleTag = gen("span");
-            price.textContent = productInfo.newPrice;
-            saleTag.textContent = "Sale";
-            imgDiv.appendChild(saleTag);
-            img.classList.add("prod-image");
-            saleTag.classList.add("sale-tag");
-        } else {
-            price.textContent = productInfo.price;
-        }
+        let classRecitation = gen("h2");
+        classRecitation.textContent = courseInfo.recitation;
+        courseDiv.appendChild(classRecitation);
 
-        newElm.appendChild(imgDiv);
-        newElm.appendChild(a);
-        newElm.appendChild(price);
+        let classCapacity = gen("h2");
+        classCapacity.textContent = courseInfo.capacity;
+        courseDiv.appendChild(classCapacity);
+
+        let addButton = gen("button");
+        addButton.id = courseInfo.class_id;
+        addButton.textContent = "Add Class";
+        addButton.addEventListener("click", addToCart);
+        courseDiv.appendChild(addButton);
 
         return newElm;
+    }
+
+    async function addToCart() {
+        try {
+            let url = BASE_URL + `add-cart?class_id=${this.id}`;
+            let resp = await fetch(url);
+            resp = checkStatus(resp);
+            const data = await resp.json();
+            newItem(data);
+        } catch (err) {
+            handleError(err);
+        }
+    }
+
+    /**
+   * Adds the current item to the cart items, a cart saved on local
+   * storage
+   * @param {Object} productData - product information in JSON format
+   */
+    function newItem(courseData) {
+        let cartList = [];
+
+        if(localStorage.getItem('cart-items')){
+            cartList = JSON.parse(localStorage.getItem('cart-items'));
+        }
+
+        let newItem = {
+            'classID': courseData.class_id,
+            'className': courseData.class_name,
+            'location': courseData.location,
+            'classTime': courseData.class_time,
+            'classRecitation': courseData.recitation,
+        }
+
+        cartList.push(newItem);
+        localStorage.setItem('cart-items', JSON.stringify(cartList));
     }
 
     /**

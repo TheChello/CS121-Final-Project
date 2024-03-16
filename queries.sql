@@ -22,9 +22,7 @@ WHERE d.department_name = 'Computer Science';
 SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity
 FROM classes c
 NATURAL JOIN sections s
-NATURAL JOIN departments
-WHERE department_name = 'Computer Science'
-AND c.comments LIKE "";
+NATURAL JOIN departments;
 
 -- Query from classes to get reviews for every class in a department
 SELECT class_id, class_name, review

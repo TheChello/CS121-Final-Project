@@ -33,6 +33,7 @@
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
+            console.log(data);
             populateProfessorList(data);
         } catch (err) {
             handleError(err);
@@ -65,10 +66,14 @@
         professorName.textContent = professorInfo.professor_name;
         professorDiv.appendChild(professorName);
 
-        let classesName = gen("h2");
-        classesName.textContent = professorInfo.class_name;
-        classDiv.appendChild(classesName);
+        let classesID = gen("h2");
+        classesID.textContent = professorInfo.class_id;
+        professorDiv.appendChild(classesID);
 
+        let classesName = gen("h3");
+        classesName.textContent = professorInfo.class_name;
+        professorDiv.appendChild(classesName);
+        
         return professorDiv;
     }
 
@@ -79,7 +84,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("department-professors").appendChild(text);
     }
 
     init();

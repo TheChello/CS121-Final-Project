@@ -49,7 +49,7 @@
             item.appendChild(a);
             list.appendChild(item);
          }
-         else if (category == "lasses") {
+         else if (category == "Departments") {
             a.href = "departments.html" + "?path=classes";
             item.appendChild(a);
             list.appendChild(item);

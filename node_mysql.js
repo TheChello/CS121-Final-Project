@@ -47,7 +47,7 @@ app.get("/departments", async (req, res) => {
 async function getDepartments(db) {
     let query = "SELECT DISTINCT department_name FROM departments";
     let rows = await db.query(query);
-    console.log(rows);
+    // console.log(rows);
     return rows;
   }
 
@@ -65,9 +65,44 @@ app.get("/departments/classes", async (req, res) => {
     let db;
     try {
       db = await getDB();
-      department = req.query["department"]
-      let deparmentClasses = await getDepartmentClasses(db, department);
-      let result = parseDepartmentClasses(JSON.parse(JSON.stringify(deparmentClasses)));
+      let tmp = req.query["department"];
+      let department = tmp.replaceAll("_", " ");
+      let deparmentClasses = await getClassesDepartment(department, db);
+      let result = JSON.parse(JSON.stringify(deparmentClasses));
+      res.json(result);
+    } catch (error) {
+      res.type("text");
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
+    if (db) {
+      db.end();
+    }
+  });
+
+async function getClassesDepartment(department, db) {
+    // let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
+    // JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
+    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM \
+    FROM classes c NATURAL JOIN departments d \
+    WHERE d.department_name WHERE d.department_name = ?;";
+    let rows = await db.query(query, [department]);
+    console.log(rows);
+    return rows;
+  }
+
+/**
+* Query to get all of classes taught by professor for 
+*     all of the professors in a department
+ */
+
+app.get("/departments/professors", async (req, res) => {
+    let db;
+    try {
+      db = await getDB();
+      let tmp = req.query["department"];
+      let department = tmp.replaceAll("_", " ");
+      let professorClasses = await getDepartmentProfessors(db, department);
+      let result = JSON.parse(JSON.stringify(professorClasses));
       console.log(result);
       res.json(result);
     } catch (error) {
@@ -79,55 +114,16 @@ app.get("/departments/classes", async (req, res) => {
     }
   });
 
-async function getDepartmentClasses(db, department) {
-    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
-    JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
-    let rows = await db.query(query, [department]);
-    return rows;
-  }
-
-// function parseDepartmentClasses(departmentClassRows) {
-//     let classes = {};
-//     departmentClassRows.forEach((class_dpt) => {
-//       let named = class_dpt.class_name;
-//       classes.named = {};
-//       classes.class_id = class_dpt.class_id;
-//       classes.class_name = class_dpt.class_name;
-//       classes.credits = class_dpt.credits;
-//       classes.term = class_dpt.term;
-//       classes.prereq = class_dpt.prereq;
-//       classes.overview = class_dpt.overview;
-//       classes.professor_name = class_dpt.professor_name;
-//   });
-// }
-
-/**
-* Query to get all of classes taught by professor for 
-*     all of the professors in a department
- */
-
-app.get("/departments/professors", async (req, res) => {
-    let db;
-    try {
-      db = await getDB();
-      department = req.query["department"]
-      let professorClasses = await getDepartmentProfessors(db, department);
-      res.json(professorClasses);
-    } catch (error) {
-      res.type("text");
-      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
-    }
-    if (db) {
-      db.end();
-    }
-  });
-
 async function getDepartmentProfessors(db, department) {
-    let query = "SELECT DISTINCT p.professor_id, p.professor_name, c.class_id, c.class_name \
+    // let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
+    // FROM professors p \
+    // JOIN classes c ON p.professor_id = c.professor_id \
+    // JOIN departments d ON p.department_name = d.department_name \
+    // WHERE d.department_name = 'Computer Science';";
+    let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
     FROM professors p \
-    JOIN classes c ON p.professor_id = c.professor_id \
-    JOIN departments d ON p.department_name = d.department_name \
-    WHERE d.department_name = 'Computer Science';";
+    FROM professors p NATURAL JOIN classes c NATURAL JOIN departments d \
+    WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     return rows;
   }
@@ -155,8 +151,37 @@ app.get("/classes-current", async (req, res) => {
   });
 
 async function getDepartmentClasses(db) {
-    let query = "TODO: Query from classes table in a department without description with location and sections from classes and sections";
+    let query = "SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
+    FROM classes c \
+    NATURAL JOIN sections s \
+    NATURAL JOIN departments";
     let rows = await db.query(query);
+    return rows;
+  }
+
+app.get("/add-cart", async (req, res) => {
+    let db;
+    try {
+      db = await getDB();
+      let tmp = req.query["class_id"];
+      let currentClasses = await getClass(db, tmp);
+      res.json(currentClasses);
+    } catch (error) {
+      res.type("text");
+      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+    }
+    if (db) {
+      db.end();
+    }
+  });
+
+async function getClass(db, class_id) {
+    let query = "SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
+    FROM classes c \
+    NATURAL JOIN sections s \
+    NATURAL JOIN departments \
+    WHERE class_id = ?";
+    let rows = await db.query(query, [class_id]);
     return rows;
   }
 
@@ -181,7 +206,14 @@ app.get("/departments/reviews", async (req, res) => {
   });
 
 async function getDepartmentReviews(db, department) {
-    let query = "TODO: Query from classes to get reviews for every class in a department";
+    let query = "SELECT class_id, class_name, review \
+    FROM classes \
+    WHERE class_id IN ( \
+        SELECT class_id \
+        FROM departments \
+        WHERE department_name = ?"
+    );
+    ;
     let rows = await db.query(query);
     return rows;
   }

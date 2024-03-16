@@ -20,6 +20,7 @@
         createNavigationBar();
         let location = window.location.toString().split("?")[1];
         let department = location.split("=")[1];
+        console.log(department);
         initClassesDisplay(department);
     }
 

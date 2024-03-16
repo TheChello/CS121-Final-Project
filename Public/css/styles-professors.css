@@ -5,47 +5,47 @@
  * This is the style.css page for the index.html page for final project. 
  */
 
- #search-bar {
+ body {
+    margin: 0;
+}
+
+#department-professors {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+#department-professors > div {
+    display: flex;
+    flex-direction: column;
+    margin-left: 100px;
+    margin-right: 50px;
+    /* padding-left: 100px;
+    padding-right: 100px; */
+    width: 60%;
     margin-top: 10px;
-    border: solid black 1px;
-    border-radius: 5px;
-    width: 70%;
-    height: 44px;
-    padding-left: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    border-bottom: solid 2px #3E7CB1;
 }
 
-#header-bar a {
-    margin-top: 15px;
-    font-size: 15pt;
-    color: #808080;
-    border: none;
-    background-color: white;
-    width: 14%;
-    text-align: center;
-}
-  
-nav > ul {
-    padding-top: 10px;
-    list-style-type: none;
-}
-  
-nav > ul > li {
-    padding-left: 50px;
-    padding-right: 50px;
-    display: inline;
-}
-
-nav a {
+#department-professors h1 {
+    font-family: Helvetica,  Arial, sans-serif;
+    color: #26408B;
     font-size: 20pt;
-    color: #edede9;
-    text-decoration: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-nav {
-    background-color: #6b705c;
-    height: 50px;
+#department-professors h2 {
+    font-family: Helvetica,  Arial, sans-serif;
+    color: #26408B;
+    font-size: 30pt;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-ul {
-    margin: 0px;
+footer {
+    text-align: center;
+    margin: 30px;
 }

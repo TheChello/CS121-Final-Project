@@ -11,7 +11,7 @@
     "use strict";
     
     const BASE_URL = "/";
-    const tmpDept = ["CS", "ACM", "IDS"]
+    // const tmpDept = ["CS", "ACM", "IDS"]
 
     /**
      * This function initializes the home page by initializing the category bar
@@ -30,7 +30,7 @@
         let location = window.location.toString().split("?")[1];
         let category = location.split("=")[1];
         // getAllDepartments(category);
-        getAllDepartments("classes");
+        getAllDepartments(category);
     }
     /**
      * Makes a fetch call to the API to get all of the products, then
@@ -51,12 +51,12 @@
     function displayDepartments(departmentLst, category) {
         let lst = id("department-list");
         departmentLst.forEach((department) => {
-            console.log(department)
             let item = gen("li");
             let a = gen("a");
             let text = document.createTextNode(department);
             a.appendChild(text);
-            a.href = category.toLowerCase() + "_department.html?department=" + department;
+            let tmp = department.replaceAll(" ", "_");
+            a.href = category.toLowerCase() + "_department.html?department=" + tmp;
             a.appendChild(text);
             item.appendChild(a)
             lst.appendChild(item);

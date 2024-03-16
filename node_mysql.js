@@ -32,7 +32,9 @@ app.get("/departments", async (req, res) => {
     try {
       db = await getDB();
       let deparmentNames = await getDepartments(db);
-      res.json(deparmentNames);
+      let result = Object.values(JSON.parse(JSON.stringify(deparmentNames)));
+      let lst = parseDepartments(result);
+      res.json(lst);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -49,6 +51,12 @@ async function getDepartments(db) {
     return rows;
   }
 
+function parseDepartments(departmentRows) {
+    let departmentLst = [];
+    departmentRows.forEach((department) => departmentLst.push(department.department_name));
+    return departmentLst;
+}
+
 /**
  * Need to get all of classes in a department
  */
@@ -59,7 +67,9 @@ app.get("/departments/classes", async (req, res) => {
       db = await getDB();
       department = req.query["department"]
       let deparmentClasses = await getDepartmentClasses(db, department);
-      res.json(deparmentClasses);
+      let result = parseDepartmentClasses(JSON.parse(JSON.stringify(deparmentClasses)));
+      console.log(result);
+      res.json(result);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -70,10 +80,26 @@ app.get("/departments/classes", async (req, res) => {
   });
 
 async function getDepartmentClasses(db, department) {
-    let query = "TODO: Need to get all of the classes for a given department";
-    let rows = await db.query(query);
+    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
+    JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
+    let rows = await db.query(query, [department]);
     return rows;
   }
+
+// function parseDepartmentClasses(departmentClassRows) {
+//     let classes = {};
+//     departmentClassRows.forEach((class_dpt) => {
+//       let named = class_dpt.class_name;
+//       classes.named = {};
+//       classes.class_id = class_dpt.class_id;
+//       classes.class_name = class_dpt.class_name;
+//       classes.credits = class_dpt.credits;
+//       classes.term = class_dpt.term;
+//       classes.prereq = class_dpt.prereq;
+//       classes.overview = class_dpt.overview;
+//       classes.professor_name = class_dpt.professor_name;
+//   });
+// }
 
 /**
 * Query to get all of classes taught by professor for 
@@ -97,8 +123,12 @@ app.get("/departments/professors", async (req, res) => {
   });
 
 async function getDepartmentProfessors(db, department) {
-    let query = "TODO: Query to get all of classes taught by professor for all of the professors in a department";
-    let rows = await db.query(query);
+    let query = "SELECT DISTINCT p.professor_id, p.professor_name, c.class_id, c.class_name \
+    FROM professors p \
+    JOIN classes c ON p.professor_id = c.professor_id \
+    JOIN departments d ON p.department_name = d.department_name \
+    WHERE d.department_name = 'Computer Science';";
+    let rows = await db.query(query, [department]);
     return rows;
   }
 
@@ -375,8 +405,8 @@ async function getDB() {
     // Variables for connections to the database.
     host: "localhost",      
     port: "3306",          
-    user: "appadmin",         
-    password: "adminpw",    
+    user: "appclient",         
+    password: "clientpw",    
     database: "tration"    
   });
   return db;

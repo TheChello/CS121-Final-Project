@@ -68,7 +68,7 @@
         courseDiv.appendChild(classesName);
 
         let location = gen("h2");
-        location.textContent = courseInfo.location;
+        location.textContent = courseInfo.class_location;
         courseDiv.appendChild(location);
 
         let classTime = gen("h2");
@@ -93,39 +93,18 @@
     }
 
     async function addToCart() {
+        let params = {class_id: this.id};
         try {
-            let url = BASE_URL + `add-cart?class_id=${this.id}`;
-            let resp = await fetch(url);
-            resp = checkStatus(resp);
-            const data = await resp.json();
-            newItem(data);
+            let resp = await fetch(BASE_URL + "students/register", { 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method : "POST",
+                body : JSON.stringify(params)
+            });
         } catch (err) {
             handleError(err);
         }
-    }
-
-    /**
-   * Adds the current item to the cart items, a cart saved on local
-   * storage
-   * @param {Object} productData - product information in JSON format
-   */
-    function newItem(courseData) {
-        let cartList = [];
-
-        if(localStorage.getItem('cart-items')){
-            cartList = JSON.parse(localStorage.getItem('cart-items'));
-        }
-
-        let newItem = {
-            'classID': courseData.class_id,
-            'className': courseData.class_name,
-            'location': courseData.location,
-            'classTime': courseData.class_time,
-            'classRecitation': courseData.recitation,
-        }
-
-        cartList.push(newItem);
-        localStorage.setItem('cart-items', JSON.stringify(cartList));
     }
 
     /**

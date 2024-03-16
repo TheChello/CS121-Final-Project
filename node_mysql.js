@@ -70,7 +70,7 @@ app.get("/departments/classes", async (req, res) => {
       let department = tmp.replaceAll("_", " ");
       let deparmentClasses = await getClassesDepartment(department, db);
       let result = JSON.parse(JSON.stringify(deparmentClasses));
-      console.log(result);
+      console.log(result.splice(1,5));
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -165,32 +165,6 @@ async function getDepartmentClasses(db) {
     return rows;
   }
 
-app.get("/add-cart", async (req, res) => {
-    let db;
-    try {
-      db = await getDB();
-      let tmp = req.query["class_id"];
-      let currentClasses = await getClass(db, tmp);
-      res.json(currentClasses);
-    } catch (error) {
-      res.type("text");
-      res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
-    }
-    if (db) {
-      db.end();
-    }
-  });
-
-async function getClass(db, class_id) {
-    let query = "SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
-    FROM classes c \
-    NATURAL JOIN sections s \
-    NATURAL JOIN departments \
-    WHERE class_id = ?";
-    let rows = await db.query(query, [class_id]);
-    return rows;
-  }
-
 /**
  * Query from classes to get reviews for every class in a department
  */
@@ -262,23 +236,15 @@ async function getStudentCredits(db, userid) {
  */
 
 app.post("/students/register", async (req, res, next) => {
-    let qid = req.body.qid;
-    if (!qid) {
+    if (!(req.cookies["logged_in"] && req.cookies.userid)) {
       res.status(CLIENT_ERR_CODE);
-      next(Error("Missing required qid."));
+      next(Error("Need to be Logged In"));
     } else {
       let db;
       try {
-        db = await getDB();
-        let successfulResult = await removeFromQueue(qid, db);
-        db.end();
-        if (successfulResult) {
-          res.type("text");
-          res.send("Successfully removed from queue!");
-        } else {
-          res.status(CLIENT_ERR_CODE);
-          next(Error("No entry found for given qid."));
-        }
+        let uid = req.cookies.userid;
+        let class_id = req.params.class_id;
+        await registerClass(uid, class_id);
       } catch (err) { // some other server-side error occured
         if (db) {
           db.end();
@@ -290,34 +256,11 @@ app.post("/students/register", async (req, res, next) => {
     }
   });
 
-app.post("/add-classes", async (req, res, next) => {
-    let qid = req.body.qid;
-    if (!qid) {
-      res.status(CLIENT_ERR_CODE);
-      next(Error("Missing required qid."));
-    } else {
-      let db;
-      try {
-        db = await getDB();
-        let successfulResult = await removeFromQueue(qid, db);
-        db.end();
-        if (successfulResult) {
-          res.type("text");
-          res.send("Successfully removed from queue!");
-        } else {
-          res.status(CLIENT_ERR_CODE);
-          next(Error("No entry found for given qid."));
-        }
-      } catch (err) { // some other server-side error occured
-        if (db) {
-          db.end();
-        }
-        res.status(SERVER_ERR_CODE);
-        err.message = SERVER_ERROR;
-        next(err);
-      }
-    }
-  });
+async function registerClass(uid, class_id) {
+  let query = "INSERT INTO registered VALUES (?, ?, 0)";
+  let rows = await db.query(query, [uid, class_id]);
+  return rows;
+}
 
 app.post("/add-students", async (req, res, next) => {
     let qid = req.body.qid;
@@ -393,7 +336,7 @@ app.post("/login", checkLogin, async (req, res, next) => {
 });
 
 async function authenticateUser(username, password, db) {
-  let procedure = "CALL PROCEDURE ...";
+  let procedure = "CALL FUNCTION authenticate(?, ?)";
   let result = await db.query(procedure, [username, password]);
   return result;
 }

@@ -82,8 +82,10 @@ app.get("/departments/classes", async (req, res) => {
 
 async function getClassesDepartment(department, db) {
     let query = "SELECT c.class_id, c.class_name, c.credits, c.term, \
-    c.prereq, c.overview, c.professor_id FROM classes c \
-    JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
+    c.prereq, c.overview, p.professor_name FROM classes c \
+    JOIN departments d ON c.class_id = d.class_id JOIN professors p \
+    ON c.professor_id = p.professor_id WHERE d.department_name = \
+    'Computer Science' = ?;";
     let rows = await db.query(query, [department]);
     // console.log(rows);
     return rows;

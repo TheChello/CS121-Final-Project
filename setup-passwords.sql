@@ -76,11 +76,11 @@ BEGIN
 
   ELSE 
     SELECT DISTINCT salt INTO saltt FROM user_info 
-    WHERE user_info.username = username;
+    WHERE user_info.user_name = username;
     SELECT DISTINCT password_hash INTO pwd FROM user_info 
-    WHERE user_info.username = username;
+    WHERE user_info.user_name = username;
     SELECT DISTINCT user_id INTO id FROM user_info 
-    WHERE user_info.username = username;
+    WHERE user_info.user_name = username;
     IF SHA2(CONCAT(saltt, password), 256) = pwd 
     AND SHA2(CONCAT(saltt, username), 256) = id
     THEN RETURN id;

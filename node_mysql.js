@@ -1,11 +1,3 @@
-/**
- * Author: Yunha Jo, Shrey Srivastava
- * CS 121 Winter 2024
- * Date: March 17, 2024
- * This is node_mysql.js that interacts with Tration, REGIS-based database that
- * improves User Interaction
- */
-
 "use strict";
 const express = require("express");
 const app = express();
@@ -99,10 +91,8 @@ app.get("/departments/classes", async (req, res) => {
 
 async function getClassesDepartment(department, db) {
     let query = "SELECT c.class_id, c.class_name, c.credits, c.term, \
-    c.prereq, c.overview, p.professor_name FROM classes c \
-    JOIN departments d ON c.class_id = d.class_id JOIN professors p \
-    ON c.professor_id = p.professor_id WHERE d.department_name = ? \
-    ORDER BY c.class_id;";
+    c.prereq, c.overview, c.professor_id FROM classes c \
+    JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     return rows;
   }
@@ -147,7 +137,6 @@ async function getDepartmentProfessors(db, department) {
   * Gets all of the classes offered in the database along with
   * their sections
  */
-
 // Design decision: do we get all of the classes in a department first?
 // Or do we get all of the classes in general?
 app.get("/classes-current", async (req, res) => {
@@ -207,7 +196,7 @@ app.get("/departments/reviews", async (req, res) => {
  */
 
 async function getDepartmentReviews(db, department) {
-    let query = "SELECT class_id, class_name, review, rating \
+    let query = "SELECT class_id, class_name, review \
     FROM classes \
     WHERE class_id IN ( \
         SELECT class_id \
@@ -228,7 +217,7 @@ app.get("/student/classes", async (req, res) => {
       db = await getDB();
       let userid = req.cookies.userid;
       let studentClasses = await getStudentClasses(db, userid);
-      console.log(studentClasses)
+      res.json(studentClasses);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -306,7 +295,6 @@ app.post("/students/register", async (req, res, next) => {
         let section_id = req.body.section_id;
         let success = await registerClass(uid, class_id, section_id, db);
         if (success) {
-          console.log("Successful")
           res.type("text");
           res.send(`Successfully added!`);
         }
@@ -371,7 +359,6 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
-
 /**
  * Authenticates the user
  */
@@ -383,14 +370,14 @@ async function authenticateUser(username, password, db) {
 }
 
 /**
-  * Logs the user out of the current website
+  * Allows the user to create account on the database
  */
 
 app.post("/logout", async (req, res) => {
   let msg;
   if (!(res.cookie["logged_in"] != "true")) {
     // no error if the cookie doesn't exist.
-    msg = "You are not currently logged in.";
+    msg = "You are not currently logged in."
   } else {
     res.clearCookie("logged_in"); 
     res.clearCookie("userid");
@@ -401,10 +388,10 @@ app.post("/logout", async (req, res) => {
 });
 
 /**
-  * Allows the user to create account on the database
+  * Adds user to the databse
  */
 
-app.post("/signup", checkLogin, async (req, res, next) => {
+app.post("/signup", async (req, res, next) => {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
   let username = req.body.username;
@@ -436,7 +423,7 @@ app.post("/signup", checkLogin, async (req, res, next) => {
 });
 
 /**
-  * Adds user to the databse
+  * Establishes connection to the database
  */
 
 async function addNewUser(firstName, lastName, username, password, grade, major, db) {
@@ -446,7 +433,7 @@ async function addNewUser(firstName, lastName, username, password, grade, major,
 }
 
 /**
-  * Establishes connection to the database
+  * Error Handler function
  */
 
 async function getDB() {
@@ -460,10 +447,6 @@ async function getDB() {
   });
   return db;
 }
-
-/**
-  * Error Handler function
- */
 
 function errorHandler(err, req, res, next) {
   if (DEBUG) {

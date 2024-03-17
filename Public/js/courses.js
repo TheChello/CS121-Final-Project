@@ -93,14 +93,15 @@
     }
 
     async function addToCart() {
-        let params = {class_id: this.id};
+        console.log("calling addtocart");
+        let param = { "cid": this.id };
         try {
             let resp = await fetch(BASE_URL + "students/register", { 
                 headers: {
                     "Content-Type": "application/json",
                 },
                 method : "POST",
-                body : JSON.stringify(params)
+                body : JSON.parse(param)
             });
         } catch (err) {
             handleError(err);

@@ -27,6 +27,7 @@
      */
     async function initProductDisplay() {
         let loggedIn = sessionStorage.getItem("logged-in");
+        console.log(loggedIn);
         if (loggedIn == "True") {
             id("important-links").innerHTML = "";
             let link1 = gen("div");

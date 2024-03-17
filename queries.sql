@@ -41,4 +41,8 @@ FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d
 WHERE r.student_id = '5AWIyFsxOtherCharactersToGetTo280'
 GROUP BY d.department_name;
 
+SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity
+FROM registered r NATURAL JOIN classes c NATURAL JOIN sections s 
+WHERE r.student_id = '5AWIyFs'
+
 

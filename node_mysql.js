@@ -4,7 +4,6 @@ const app = express();
 const multer = require("multer");
 const mysql = require("promise-mysql");
 const cookieParser = require("cookie-parser");
-// const bcrypt = require("bcrypt"); // for optional password hashing; see brcrypt docs
 
 // To handle different POST formats
 app.use(express.urlencoded({ extended: true }));
@@ -82,11 +81,9 @@ app.get("/departments/classes", async (req, res) => {
   });
 
 async function getClassesDepartment(department, db) {
-    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM classes c \
+    let query = "SELECT c.class_id, c.class_name, c.credits, c.term, \
+    c.prereq, c.overview, c.professor_id FROM classes c \
     JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
-    // let query = "SELECT c.class_id, c.class_name, c.credits, c.term, c.prereq, c.overview, c.professor_id FROM \
-    // FROM classes c NATURAL JOIN departments d \
-    // WHERE d.department_name WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     console.log(rows);
     return rows;
@@ -123,10 +120,6 @@ async function getDepartmentProfessors(db, department) {
     JOIN classes c ON p.professor_id = c.professor_id \
     JOIN departments d ON p.department_name = d.department_name \
     WHERE d.department_name = 'Computer Science';";
-    // let query = "SELECT DISTINCT p.professor_name, c.class_id, c.class_name \
-    // FROM professors p \
-    // FROM professors p NATURAL JOIN classes c NATURAL JOIN departments d \
-    // WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
     return rows;
   }
@@ -209,8 +202,10 @@ app.get("/student/classes", async (req, res) => {
     let db;
     try {
       db = await getDB();
+      console.log("here")
       let userid = req.cookies.userid;
-      let studentClasses = await getStudentCredits(db, userid);
+      let studentClasses = await getStudentClasses(db, userid);
+      console.log(studentClasses)
       res.json(studentClasses);
     } catch (error) {
       res.type("text");
@@ -220,6 +215,14 @@ app.get("/student/classes", async (req, res) => {
       db.end();
     }
   });
+
+async function getStudentClasses(db, userid) {
+  let query = 'SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
+              FROM registered r NATURAL JOIN classes c NATURAL JOIN sections s \
+              WHERE r.student_id = ?'
+  let rows = await db.query(query, [userid]);
+  return rows;
+}
 
 async function getStudentCredits(db, userid) {
     let query = "TODO: query to get how many credits student has taken in each department";
@@ -243,7 +246,8 @@ app.post("/students/register", async (req, res, next) => {
       let db;
       try {
         let uid = req.cookies.userid;
-        let class_id = req.params.class_id;
+        let class_id = req.body.cid;
+        console.log(class_id);
         await registerClass(uid, class_id);
       } catch (err) { // some other server-side error occured
         if (db) {
@@ -257,9 +261,9 @@ app.post("/students/register", async (req, res, next) => {
   });
 
 async function registerClass(uid, class_id) {
+  console.log("calling insert");
   let query = "INSERT INTO registered VALUES (?, ?, 0)";
-  let rows = await db.query(query, [uid, class_id]);
-  return rows;
+  await db.query(query, [uid, class_id]);
 }
 
 
@@ -278,7 +282,10 @@ app.post("/login", checkLogin, async (req, res, next) => {
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
-      let userid = await authenticateUser(username, password, db);
+      let tmp = await authenticateUser(username, password, db);
+      tmp = JSON.parse(JSON.stringify(tmp));
+      let useridlst = Object.values(tmp[0]);
+      let userid = useridlst[0];
       if (userid) {
         res.cookie("logged_in", "true", { maxAge: COOKIE_EXP_TIME });
         res.cookie("userid", userid, { maxAge: COOKIE_EXP_TIME });
@@ -300,7 +307,6 @@ async function authenticateUser(username, password, db) {
   console.log("In authenticate User");
   let procedure = "SELECT authenticate(?, ?);";
   let result = await db.query(procedure, [username, password]);
-  console.log(result);
   return result;
 }
 
@@ -374,7 +380,8 @@ async function getDB() {
     port: "3306",          
     user: "appclient",         
     password: "clientpw",    
-    database: "tration"
+    database: "tration",
+    debug: true
   });
   return db;
 }

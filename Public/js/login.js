@@ -45,7 +45,7 @@
             let text = gen("h2");
             text.textContent = msg;
             id("login-form").appendChild(text);
-            sessionStorage.setItem('login', 'True');
+            sessionStorage.setItem('logged-in', 'True');
         } catch (err) {
             handleError(err);
         }
@@ -64,10 +64,10 @@
             resp = checkStatus(resp);
             const msg = await resp.text();
             console.log(msg);
-            sessionStorage.setItem('login', 'False');
             let text = gen("h2");
             text.textContent = msg;
             id("login-form").appendChild(text);
+            sessionStorage.setItem('logged-in', 'False');
         } catch (err) {
             handleError(err);
         }

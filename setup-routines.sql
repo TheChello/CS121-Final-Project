@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE FUNCTION calculate_total_credits(student_id CHAR(7)) RETURNS INT 
+CREATE FUNCTION calculate_total_credits(student_id VARCHAR(280)) RETURNS INT 
 DETERMINISTIC
 BEGIN
     DECLARE total_credits INT;
@@ -24,7 +24,7 @@ END //
 DELIMITER ;
 
 CREATE TABLE schedule_view (
-    student_id CHAR(7), 
+    student_id VARCHAR(280), 
     class_id VARCHAR(20), 
     total_credits INT, 
     PRIMARY KEY (student_id, class_id)
@@ -42,7 +42,7 @@ FROM schedule_view GROUP BY student_id;
 
 DELIMITER //
 
-CREATE PROCEDURE sp_update_schedule(student_id CHAR(7), class_id VARCHAR(20))
+CREATE PROCEDURE sp_update_schedule(student_id VARCHAR(280), class_id VARCHAR(20))
 BEGIN
     -- Update the materialized view
     UPDATE schedule_view
@@ -65,7 +65,7 @@ BEGIN
       -- Example of calling our helper procedure, passing in the new row's 
       -- information
     CALL sp_update_schedule(NEW.student_id, NEW.class_id);
-    CALL sp_update_capacity(NEW.class_id);
+    CALL sp_update_capacity(NEW.class_id, NEW.section_id);
 END !
 DELIMITER ;
 
@@ -87,7 +87,7 @@ DELIMITER ;
 -- When someone registers for a class, want capacity to go down
 DELIMITER //
 
-CREATE PROCEDURE sp_update_capacity(class_id VARCHAR(20))
+CREATE PROCEDURE sp_update_capacity(class_id VARCHAR(20), section_id INT)
 BEGIN
     -- Update the materialized view
     DECLARE cur_capacity INT;
@@ -96,7 +96,7 @@ BEGIN
     IF cur_capacity != 0 THEN
         UPDATE sections
         SET capacity = cur_capacity - 1
-        WHERE class_id = class_id;
+        WHERE s.class_id = class_id AND s.section_id = section_id;
     END IF;
 END //
 

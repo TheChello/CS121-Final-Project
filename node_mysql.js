@@ -224,9 +224,31 @@ async function getStudentClasses(db, userid) {
   return rows;
 }
 
+app.get("/student/credits", async (req, res) => {
+  let db;
+  try {
+    db = await getDB();
+    console.log("here44")
+    let userid = req.cookies.userid;
+    let studentCredits = await getStudentCredits(db, userid);
+    let tmp = JSON.parse(JSON.stringify(studentCredits));
+    console.log(tmp);
+    res.json(tmp);
+  } catch (error) {
+    res.type("text");
+    res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
+  }
+  if (db) {
+    db.end();
+  }
+});
+
 async function getStudentCredits(db, userid) {
-    let query = "TODO: query to get how many credits student has taken in each department";
-    let rows = await db.query(query);
+    let query = "SELECT d.department_name, SUM(c.credits) AS total_credits \
+    FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d \
+    WHERE r.student_id = ? \
+    GROUP BY d.department_name;";
+    let rows = await db.query(query, [userid]);
     return rows;
   }
 

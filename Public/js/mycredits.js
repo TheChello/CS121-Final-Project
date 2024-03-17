@@ -17,21 +17,20 @@
      * then populating the screen with the products.
      */
     function init() {
-        getCategories();
-        initProductDisplay();
+        createNavigationBar();
+        initMyCreditsDisplay();
     }
-
     /**
      * Makes a fetch call to the API to get all of the products, then
      * calls a function to populate the product display.
      */
-    async function initProductDisplay() {
+     async function initMyCreditsDisplay() {
         try {
-            let url = BASE_URL + "products";
+            let url = BASE_URL + "student/credits";
             let resp = await fetch(url);
             resp = checkStatus(resp);
             const data = await resp.json();
-            populateProductView(data);
+            populateClassesView(data);
         } catch (err) {
             handleError(err);
         }
@@ -42,11 +41,11 @@
      * a product view and adds it to the display
      * @param {Object} productLst - a list of products in JSON form
      */
-    function populateProductView(productLst) {
-        id("product-display").innerHTML = "";
-        productLst.forEach((productInfo) => {
-            let newProduct = createElem(productInfo);
-            id("product-display").appendChild(newProduct);
+    function populateClassesView(courseLst) {
+        id("courses-taken").innerHTML = "";
+        courseLst.forEach((courseInfo) => {
+            let newCourses = createElem(courseInfo);
+            id("courses-taken").appendChild(newCourses);
         });
     }
 
@@ -56,39 +55,19 @@
      * @param {Object} productInfo - product information in JSON format
      * @returns {Object} - A div object to be added to screen
      */
-    function createElem(productInfo) {
-        let newElm = gen("div");
+    function createElem(creditInfo) {
+        let courseDiv = gen("div");
 
-        let imgDiv = gen("div");
+        let dptName = gen("h2");
+        dptName.textContent = creditInfo.department_name;
+        courseDiv.appendChild(dptName);
 
-        let img = gen("img");
-        img.src = productInfo.imgPath;
-        img.alt = productInfo.name;
+        let credits = gen("h2");
+        credits.textContent = creditInfo.total_credits;
+        courseDiv.appendChild(credits);
 
-        imgDiv.appendChild(img);
 
-        let a = gen("a");
-        a.href = "product_view.html?category=" + productInfo.category + "&product=" + productInfo.name;
-        a.title = productInfo.name;
-        a.innerHTML = formatProductName(productInfo.name);
-
-        let price = gen("p");
-        if (productInfo.newPrice != "0") {
-            let saleTag = gen("span");
-            price.textContent = productInfo.newPrice;
-            saleTag.textContent = "Sale";
-            imgDiv.appendChild(saleTag);
-            img.classList.add("prod-image");
-            saleTag.classList.add("sale-tag");
-        } else {
-            price.textContent = productInfo.price;
-        }
-
-        newElm.appendChild(imgDiv);
-        newElm.appendChild(a);
-        newElm.appendChild(price);
-
-        return newElm;
+        return courseDiv;
     }
 
     /**
@@ -98,7 +77,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("courses-taken").appendChild(text);
     }
 
     init();

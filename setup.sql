@@ -15,9 +15,9 @@ authenticate future logins and
 */
 CREATE TABLE user_info (
     -- Will be generated to match whether or not user is_admin or not
-    user_id CHAR(7), 
-    password_hash VARCHAR(10) NOT NULL, 
-    user_name VARCHAR(50) NOT NULL,
+    user_id VARCHAR(280), 
+    password_hash VARCHAR(280) NOT NULL, 
+    user_name VARCHAR(20) NOT NULL,
 
     -- True for admin, False for students 
     is_admin BOOLEAN NOT NULL, 
@@ -45,7 +45,7 @@ references the departments table as a foreign key.
 CREATE TABLE students (
     -- If user is not an admin, then their user_id will serve as their 
     -- student_id. 
-    student_id  CHAR(7),
+    student_id  VARCHAR(280),
     -- This can be 1-4 to indicate Freshmen, Sophmore, Junior, Senior
     grade INT NOT NULL, 
     student_name VARCHAR(50) NOT NULL, 
@@ -79,7 +79,7 @@ CREATE TABLE classes (
     -- and there needs to be a lottery, or if there needs to be an OM
     comments VARCHAR(200), 
     -- General overview of the class
-    overview VARCHAR(500), 
+    overview VARCHAR(1000), 
     -- To connect to the professors table
     professor_id CHAR(7),
     -- Some common words or phrases to identify this class
@@ -140,7 +140,7 @@ as if any of the primary keys are updated, we would want the registration to
 reflect that.  
 */
 CREATE TABLE registered (
-    student_id CHAR(7), 
+    student_id VARCHAR(280), 
     class_id VARCHAR(20),
     section_id INT, 
 

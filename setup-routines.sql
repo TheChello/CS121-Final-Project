@@ -30,6 +30,7 @@ CREATE TABLE schedule_view (
     PRIMARY KEY (student_id, class_id)
 );
 
+-- To prove routines work
 INSERT INTO schedule_view (student_id, class_id, total_credits)
 SELECT r.student_id, c.class_id, calculate_total_credits(r.student_id)
 FROM registered r NATURAL JOIN classes c
@@ -45,6 +46,8 @@ DELIMITER //
 CREATE PROCEDURE sp_update_schedule(student_id VARCHAR(280), class_id VARCHAR(20))
 BEGIN
     -- Update the materialized view
+        
+
     UPDATE schedule_view
     SET total_credits = (
         SELECT SUM(credits)
@@ -52,7 +55,7 @@ BEGIN
         NATURAL JOIN classes c
         WHERE r.student_id = student_id
     )
-    WHERE student_id = student_id;
+    WHERE schedule_view.student_id = student_id;
 END //
 
 DELIMITER ;
@@ -79,12 +82,6 @@ BEGIN
 END !
 DELIMITER ;
 
--- INSERT INTO registered (student_id, class_id) 
--- VALUES ('5AWIyFs', 'CS 137');
-
--- DELETE FROM registered WHERE student_id = '5AWIyFs' and class_id = 'CS 003';
-
--- When someone registers for a class, want capacity to go down
 DELIMITER //
 
 CREATE PROCEDURE sp_update_capacity(class_id VARCHAR(20), section_id INT)

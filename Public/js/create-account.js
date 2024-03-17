@@ -49,6 +49,11 @@
                 body : JSON.stringify(params)
             });
             resp = checkStatus(resp);
+            const msg = await resp.text();
+            console.log(msg);
+            let text = gen("h2");
+            text.textContent = msg;
+            id("create-account").appendChild(text);
         } catch (err) {
             handleError(err);
         }

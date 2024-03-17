@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 // const bcrypt = require("bcrypt"); // for optional password hashing; see brcrypt docs
 
 // To handle different POST formats
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(multer().none());
 
@@ -209,7 +209,7 @@ app.get("/student/classes", async (req, res) => {
     let db;
     try {
       db = await getDB();
-      let userid = req.cookies.userid
+      let userid = req.cookies.userid;
       let studentClasses = await getStudentCredits(db, userid);
       res.json(studentClasses);
     } catch (error) {
@@ -274,6 +274,7 @@ app.post("/login", checkLogin, async (req, res, next) => {
     res.status(CLIENT_ERR_CODE);
     next(Error("Missing password or username"));
   } else {
+    console.log("here");
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
@@ -302,6 +303,20 @@ async function authenticateUser(username, password, db) {
   console.log(result);
   return result;
 }
+
+app.post("/logout", async (req, res) => {
+  let msg;
+  if (!(res.cookie["logged_in"] != "true")) {
+    // no error if the cookie doesn't exist.
+    msg = "You are not currently logged in."
+  } else {
+    res.clearCookie("logged_in"); 
+    res.clearCookie("userid");
+    msg = "Successfully logged out!";
+  }
+  res.type("text");
+  res.send(msg);
+});
 
 app.post("/signup", checkLogin, async (req, res, next) => {
   let firstName = req.body.firstName;
@@ -344,6 +359,7 @@ async function addNewUser(firstName, lastName, username, password, grade, major,
 
 function checkLogin(req, res, next) {
   if (req.cookies["logged_in"] && req.cookies.userid) {
+    console.log("already logged in");
     res.type("text");
     res.send(`Welcome back to Tration!`);
   } else {

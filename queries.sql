@@ -36,15 +36,15 @@ WHERE class_id IN (
 );
 
 -- Query to get how many credits student has taken in each department
--- To test 
 SELECT d.department_name, SUM(c.credits) AS total_credits
 FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d
 WHERE r.student_id = 'Insert_Student_ID'
 GROUP BY d.department_name;
 
+-- Query to get all of the classes that a student has signed up for
 SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity
 FROM registered r NATURAL JOIN classes c NATURAL JOIN sections s 
-WHERE r.student_id = '5AWIyFs'
+WHERE r.student_id = 'Insert_Student_ID'
 
 
 

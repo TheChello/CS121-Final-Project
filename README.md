@@ -16,7 +16,17 @@ proper results.
 
 # Running the Files
 ## Short Commands:
-1. Run 'source-reset.sql' - 
+1. Run 'source reset.sql;' - this will set up the whole database
+2. Run 'node-mysql.js'
+## Long Commands:
+1. Run create database tration;
+2. Run use tration;
+3. Run source setup.sql;
+4. Run source load-data.sql;
+5. Run source setup-passwords.sql;
+6. Run source setup-routines.sql;
+7. Run source grant-permissions.sql;
+8. Run node-mysql.js
 
 # Website Flow:
 For the website, there are four public pages that you can without logging in.

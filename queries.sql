@@ -38,7 +38,7 @@ WHERE class_id IN (
 -- Query to get how many credits student has taken in each department
 SELECT d.department_name, SUM(c.credits) AS total_credits
 FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d
-WHERE r.student_id = '5AWIyFs'
+WHERE r.student_id = '5AWIyFsxOtherCharactersToGetTo280'
 GROUP BY d.department_name;
 
 

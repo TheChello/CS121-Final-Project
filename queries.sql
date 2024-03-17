@@ -8,18 +8,23 @@ FROM departments;
 -- (Computer Science in this case)
 SELECT c.class_id, c.class_name
 FROM classes c NATURAL JOIN departments d
-WHERE d.department_name = 'Mathematics';
+WHERE d.department_name = 'Computer Science';
 
 -- Query to get all of classes taught by professors for all of the 
 -- professors in a department *Note, this is their primary department
+-- This is equivalent to RA 2 in the Relational Algebra Section
 SELECT DISTINCT d.department_name, p.professor_id, p.professor_name, 
 c.class_id, c.class_name
 FROM professors p NATURAL JOIN classes c NATURAL JOIN departments d
 WHERE d.department_name = 'Computer Science';
 
--- Query from classes table in a department without description 
--- with location and sections from classes and sections
-SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity
+-- Query from classes table in a department without comments
+-- with location and sections from classes and sections. 
+-- Without comments here means that these courses have no additional info
+-- that is necessary to know (like enforcing prereqs). Comments stores
+-- that information, whereas overview stores what the class is about. 
+SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, 
+s.capacity
 FROM classes c
 NATURAL JOIN sections s
 NATURAL JOIN departments
@@ -35,7 +40,14 @@ WHERE class_id IN (
     WHERE department_name = 'Computer Science'
 );
 
+-- The next two queries are queries that work, but due to the manner in which
+-- we add users, setting up the student_ids to be equal to the salted 
+-- user_id fields, then this means that we would be unable to know what the 
+-- exact student_id that we want to test for this query is. Both of these 
+-- queries are used in our website in the my_credits tab and my_classes tab. 
+
 -- Query to get how many credits student has taken in each department
+-- Equivalent to RA1 inside the Relational Algebra Section
 SELECT d.department_name, SUM(c.credits) AS total_credits
 FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d
 WHERE r.student_id = 'Insert_Student_ID'

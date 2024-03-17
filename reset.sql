@@ -1,8 +1,9 @@
+-- File used to run all code :). 
+
 drop database tration;
 create database tration;
 use tration;
 source setup.sql;
--- source setup-passwords.sql;
 source load.sql;
 
 DELIMITER !
@@ -31,6 +32,8 @@ BEGIN
   DECLARE salt VARCHAR(8) DEFAULT make_salt(8); 
   DECLARE new_password VARCHAR(28) DEFAULT CONCAT(salt, password);
   DECLARE new_username VARCHAR(28) DEFAULT CONCAT(salt, username);
+
+  -- Populates both user_info and students 
   INSERT INTO user_info 
   VALUES (SHA2(new_username, 256), SHA2(new_password, 256), username, False, salt);
   INSERT INTO students
@@ -40,9 +43,9 @@ END !
 DELIMITER ;
 
 -- Authenticates the specified username and password against the data
--- in the user_info table.  Returns 1 if the user appears in the table, 
--- and the
--- specified password hashes to the value for the user. Otherwise returns 0.
+-- in the user_info table.  Returns the user_id if successfull, otherwise
+-- prints appropriate error message. This was necessary to coordinate with 
+-- website + cookies. 
 DELIMITER !
 CREATE FUNCTION authenticate(username VARCHAR(20), password VARCHAR(20))
 RETURNS VARCHAR(280) DETERMINISTIC
@@ -95,3 +98,8 @@ CALL sp_add_user('h8Akain', 'temp', 1, 'Businge Tancrède', '');
 CALL sp_add_user('kp8QbC9', 'temp', 3, 'Ùna Bao', 'Electrical Engineering');
 CALL sp_add_user('MmtYJP1', 'temp', 2, 'Aikorkem Arthur', 'Information and Data Sciences');
 CALL sp_add_user('ZMRyJzS', 'temp', 1, 'Atalanta Yunuen', '');
+
+source setup-routines.sql;
+source grant-permissions.sql;
+
+-- Node command? Yunha?

@@ -20,7 +20,7 @@ CREATE TABLE user_info (
     user_name VARCHAR(20) NOT NULL,
 
     -- True for admin, False for students 
-    is_admin BOOLEAN NOT NULL, 
+    is_admin BOOLEAN NOT NULL,
     salt CHAR(8) NOT NULL, 
 
     UNIQUE (user_id, password_hash), 
@@ -59,7 +59,8 @@ CREATE TABLE students (
 
 /*
 Relates the professor_id to a professor_name as well as what department they
-are in. 
+are in. If they work across multiple departments, its their primary 
+department. 
 */
 CREATE TABLE professors (
     professor_id CHAR(7), 
@@ -96,6 +97,7 @@ CREATE TABLE classes (
     grade_scheme VARCHAR(10), 
 
     CHECK (term IN (1, 2, 3, 4)), 
+    CHECK (rating BETWEEN 1.0 and 10.0), 
     PRIMARY KEY (class_id), 
     FOREIGN KEY (professor_id) REFERENCES professors(professor_id) ON UPDATE 
     CASCADE
@@ -120,9 +122,7 @@ CREATE TABLE sections (
     -- Necessary for description times (i.e. Monday/Wednesday 10:30-12:00 pm)
     class_time VARCHAR(20), 
     recitation VARCHAR(30), 
-    -- Sometimes TAs haven't been setup before a class/section is offered
-    ta_name VARCHAR(30), 
-    -- If capacity is NULL, then it essentially means the section is uncapped.
+    -- If capacity is 0, then it essentially means the section is uncapped.
     capacity INT, 
     PRIMARY KEY (section_id, class_id),
 
@@ -164,8 +164,6 @@ CREATE TABLE registered (
 );
 
 CREATE INDEX idx_class_name ON classes(class_id, class_name);
--- ^ Above is tested and in doc, the one below isn't yet
--- CREATE INDEX idx_grade ON students(grade);
 
 -- Query for idx_class_name (in reflection as well): 
 -- SELECT class_id, class_name from classes where class_name like 'Intro%';

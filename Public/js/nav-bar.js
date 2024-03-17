@@ -1,9 +1,7 @@
-/**
- * CS 132
- * Name: Yunha Jo
- * Data: June 11, 2023
- * Javascript functions for initializing the category bar
- * across all of the html pages
+/*
+ * CS 121 Winter 2024
+ * Javascript functions for REGIS-based website. These functions handle
+ * creating navigation bars across all pages
  */
 
  const NAVIGATION_BAR = ["Departments", "Professors", "Courses", "Reviews", "MyClasses", "MyCredits"];

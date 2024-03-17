@@ -1,10 +1,7 @@
-/**
- * CS 132
- * Name: Yunha Jo
- * Data: June 11, 2023
- * Javascript functions for index.html - a website for selling and buying 
- * used goods. This file handles initializing the index page, as well as links
- * to products
+/*
+ * CS 121 Winter 2024
+ * Javascript functions for REGIS-based website. These functions handle displaying
+ * reviews in a department
  */
 
  (function() {

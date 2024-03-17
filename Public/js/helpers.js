@@ -1,7 +1,6 @@
-/**
- * CS 132
- * Provided global DOM accessor aliases.
- * These are the ONLY functions that should be global in your submissions.
+/*
+ * CS 121 Winter 2024
+ * Helper functions
  */
 
 /**

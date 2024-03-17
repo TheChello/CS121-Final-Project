@@ -1,8 +1,6 @@
 /*
- * Author: Yunha Jo
- * CS 132 Spring 2023
- * Date: May 25, 2023
- * This is the style.css page for the index.html page for final project. 
+ * CS 121 Winter 2024
+ * This is the style.css page for the classes_department.html page for final project. 
  */
 
 body {
@@ -20,8 +18,6 @@ body {
     flex-direction: column;
     margin-left: 100px;
     margin-right: 50px;
-    /* padding-left: 100px;
-    padding-right: 100px; */
     width: 60%;
     margin-top: 10px;
     margin-bottom: 10px;

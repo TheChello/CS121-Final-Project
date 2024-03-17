@@ -71,7 +71,7 @@
         classDiv.appendChild(className);
 
         let classUnits = gen("h3");
-        classUnits.textContent = classInfo.term + " | " + classInfo.credits;
+        classUnits.textContent = "Term " + classInfo.term + " | " + " Credits " + classInfo.credits;
         classDiv.appendChild(classUnits);
 
         let prereqs = gen("h4");
@@ -83,7 +83,7 @@
         classDiv.appendChild(description);
 
         let instructor = gen("h2");
-        instructor.textContent = classInfo.professor_name;
+        instructor.textContent = classInfo.professor_id;
         classDiv.appendChild(instructor);
 
         let keywords = gen("h2");

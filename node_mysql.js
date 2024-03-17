@@ -63,13 +63,13 @@ function parseDepartments(departmentRows) {
 app.get("/departments/classes", async (req, res) => {
     let db;
     try {
-      console.log("classes");
+      // console.log("classes");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
       let deparmentClasses = await getClassesDepartment(department, db);
       let result = JSON.parse(JSON.stringify(deparmentClasses));
-      console.log(result.splice(1,5));
+      // console.log(result.splice(1,5));
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -85,7 +85,7 @@ async function getClassesDepartment(department, db) {
     c.prereq, c.overview, c.professor_id FROM classes c \
     JOIN departments d ON c.class_id = d.class_id WHERE d.department_name = ?;";
     let rows = await db.query(query, [department]);
-    console.log(rows);
+    // console.log(rows);
     return rows;
   }
 
@@ -97,13 +97,13 @@ async function getClassesDepartment(department, db) {
 app.get("/departments/professors", async (req, res) => {
     let db;
     try {
-      console.log("professors");
+      // console.log("professors");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
       let professorClasses = await getDepartmentProfessors(db, department);
       let result = JSON.parse(JSON.stringify(professorClasses));
-      console.log(result);
+      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -137,7 +137,7 @@ app.get("/classes-current", async (req, res) => {
       db = await getDB();
       let currentClasses = await getDepartmentClasses(db);
       let result = JSON.parse(JSON.stringify(currentClasses));
-      console.log(result);
+      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -149,8 +149,8 @@ app.get("/classes-current", async (req, res) => {
   });
 
 async function getDepartmentClasses(db) {
-    console.log("calling function");
-    let query = "SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
+    // console.log("calling function");
+    let query = "SELECT c.class_id, c.class_name, s.section_id, s.class_location, s.class_time, s.recitation, s.capacity \
     FROM classes c \
     NATURAL JOIN sections s \
     NATURAL JOIN departments";
@@ -170,7 +170,7 @@ app.get("/departments/reviews", async (req, res) => {
       let department = tmp.replaceAll("_", " ");
       let departmentReviews = await getDepartmentReviews(db, department);
       let result = JSON.parse(JSON.stringify(departmentReviews));
-      console.log(result);
+      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -182,8 +182,8 @@ app.get("/departments/reviews", async (req, res) => {
   });
 
 async function getDepartmentReviews(db, department) {
-    console.log("Calling function");
-    console.log(department);
+    // console.log("Calling function");
+    // console.log(department);
     let query = "SELECT class_id, class_name, review \
     FROM classes \
     WHERE class_id IN ( \
@@ -217,7 +217,7 @@ app.get("/student/classes", async (req, res) => {
   });
 
 async function getStudentClasses(db, userid) {
-  let query = 'SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity \
+  let query = 'SELECT c.class_id, c.class_name, s.section_id, s.class_location, s.class_time, s.recitation, s.capacity \
               FROM registered r NATURAL JOIN classes c NATURAL JOIN sections s \
               WHERE r.student_id = ?'
   let rows = await db.query(query, [userid]);
@@ -245,10 +245,20 @@ app.post("/students/register", async (req, res, next) => {
     } else {
       let db;
       try {
+        db = await getDB();
         let uid = req.cookies.userid;
-        let class_id = req.body.cid;
-        console.log(class_id);
-        await registerClass(uid, class_id);
+        let class_id = req.body.class_id;
+        let section_id = req.body.section_id;
+        let success = await registerClass(uid, class_id, section_id, db);
+        if (success) {
+          console.log("Successful")
+          res.type("text");
+          res.send(`Successfully added!`);
+        }
+        else {
+          res.status(CLIENT_ERR_CODE);
+          next(Error("Unable to register"));
+        }
       } catch (err) { // some other server-side error occured
         if (db) {
           db.end();
@@ -260,10 +270,17 @@ app.post("/students/register", async (req, res, next) => {
     }
   });
 
-async function registerClass(uid, class_id) {
+async function registerClass(uid, class_id, section_id, db) {
   console.log("calling insert");
-  let query = "INSERT INTO registered VALUES (?, ?, 0)";
-  await db.query(query, [uid, class_id]);
+  console.log(uid);
+  console.log(class_id);
+  console.log(section_id);
+  let query = "INSERT INTO registered VALUES (?, ?, ?);";
+  // let query = "SELECT DISTINCT department_name FROM departments;"
+  let result = await db.query(query, [uid, class_id, section_id]);
+  // let result = await
+  console.log(result);
+  return result.affectedRows > 0;
 }
 
 
@@ -271,7 +288,7 @@ async function registerClass(uid, class_id) {
  * Login
  */
 
-app.post("/login", checkLogin, async (req, res, next) => {
+app.post("/login", async (req, res, next) => {
   let username = req.body.username;
   let password = req.body.password;
   if (!(username && password)) {
@@ -343,7 +360,7 @@ app.post("/signup", checkLogin, async (req, res, next) => {
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
-      await addNewUser(firstName, lastName, username, password, grade, major, db);
+      let result = await addNewUser(firstName, lastName, username, password, grade, major, db);
       res.type("text");
       res.send(`Successfully created account!`);
     } catch (err) {
@@ -358,8 +375,7 @@ app.post("/signup", checkLogin, async (req, res, next) => {
 async function addNewUser(firstName, lastName, username, password, grade, major, db) {
   console.log("calling procedure");
   let procedure = 'call sp_add_user(?, ?, ?, ?, ?);';
-  let result = await db.query(procedure, [username, password, grade, firstName, major]);
-  console.log(result);
+  let result = await db.query(procedure, [username, password, grade, firstName + " " +lastName, major]);
   return result;
 }
 

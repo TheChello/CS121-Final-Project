@@ -84,7 +84,7 @@
         // courseDiv.appendChild(classCapacity);
 
         let addButton = gen("button");
-        addButton.id = courseInfo.class_id;
+        addButton.id = courseInfo.class_id + "=" + courseInfo.section_id;
         addButton.textContent = "Add Class";
         addButton.addEventListener("click", addToCart);
         courseDiv.appendChild(addButton);
@@ -94,15 +94,16 @@
 
     async function addToCart() {
         console.log("calling addtocart");
-        let param = { "cid": this.id };
+        let name = this.id.split("=");
+        let params = {class_id: name[0], section_id: name[1]};
         try {
+            console.log("fetch");
             let resp = await fetch(BASE_URL + "students/register", { 
                 headers: {
                     "Content-Type": "application/json",
                 },
                 method : "POST",
-                body : JSON.parse(param)
-            });
+                body : JSON.stringify(params)});
         } catch (err) {
             handleError(err);
         }

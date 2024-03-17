@@ -297,8 +297,8 @@ app.post("/login", checkLogin, async (req, res, next) => {
 
 async function authenticateUser(username, password, db) {
   console.log("In authenticate User");
-  let procedure = "SELECT authenticate('5AWIyFs', 'temp');";
-  let result = await db.query(procedure);
+  let procedure = "SELECT authenticate(?, ?);";
+  let result = await db.query(procedure, [username, password]);
   console.log(result);
   return result;
 }
@@ -322,14 +322,9 @@ app.post("/signup", checkLogin, async (req, res, next) => {
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
-      let userid = await addNewUser(firstName, lastName, username, password, grade, major, db);
-      console.log(userid);
-      if (userid) {
-        res.type("text");
-        res.send(`Successfully created account!`);
-      } else {
-        res.status(401).send("Invalid login credentials.");
-      }
+      await addNewUser(firstName, lastName, username, password, grade, major, db);
+      res.type("text");
+      res.send(`Successfully created account!`);
     } catch (err) {
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
     }
@@ -342,7 +337,7 @@ app.post("/signup", checkLogin, async (req, res, next) => {
 async function addNewUser(firstName, lastName, username, password, grade, major, db) {
   console.log("calling procedure");
   let procedure = 'call sp_add_user(?, ?, ?, ?, ?);';
-  let result = await db.query(procedure, [username, password, firstName, grade, major]);
+  let result = await db.query(procedure, [username, password, grade, firstName, major]);
   console.log(result);
   return result;
 }
@@ -363,7 +358,7 @@ async function getDB() {
     port: "3306",          
     user: "appclient",         
     password: "clientpw",    
-    database: "tration"    
+    database: "tration"
   });
   return db;
 }

@@ -51,7 +51,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("login-form").appendChild(text);
     }
 
     init();

@@ -33,10 +33,6 @@
         let grade = id("grade").value;
         let major = qs("input[name='major']").value;
 
-        if (!(firstname && lastname && username && password && grade)) {
-
-        }
-
         let params = {firstName: firstname,
             lastName: lastname,
             username: username, 
@@ -65,7 +61,7 @@
     function handleError(errMsg) {
         let text = gen("h2");
         text.textContent = errMsg;
-        id("product-display").appendChild(text);
+        id("create-account").appendChild(text);
     }
 
     init();

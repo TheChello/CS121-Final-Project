@@ -296,8 +296,10 @@ app.post("/login", checkLogin, async (req, res, next) => {
 });
 
 async function authenticateUser(username, password, db) {
-  let procedure = "CALL FUNCTION authenticate(?, ?)";
-  let result = await db.query(procedure, [username, password]);
+  console.log("In authenticate User");
+  let procedure = "SELECT authenticate('5AWIyFs', 'temp');";
+  let result = await db.query(procedure);
+  console.log(result);
   return result;
 }
 
@@ -306,14 +308,22 @@ app.post("/signup", checkLogin, async (req, res, next) => {
   let lastName = req.body.lastName;
   let username = req.body.username;
   let password = req.body.password;
-  if (!(firstName && lastName && username && password)) {
+  let grade = req.body.grade;
+  let major = req.body.major;
+  if (!(firstName && lastName && username && password && grade)) {
     res.status(CLIENT_ERR_CODE);
-    next(Error("Missing information"));
-  } else {
+    next(Error("Missing required information."));
+  }
+  if (username.length > 20) {
+    res.status(CLIENT_ERR_CODE);
+    next(Error("User names must be under 20 characters."));
+  } 
+  else {
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
-      let userid = await addNewUser(firstName, lastName, username, password, db);
+      let userid = await addNewUser(firstName, lastName, username, password, grade, major, db);
+      console.log(userid);
       if (userid) {
         res.type("text");
         res.send(`Successfully created account!`);
@@ -329,9 +339,11 @@ app.post("/signup", checkLogin, async (req, res, next) => {
   }
 });
 
-async function addNewUser(firstName, lastName, username, password, db) {
-  let procedure = "CALL PROCEDURE ...";
-  let result = await db.query(procedure, [firstName, lastName, username, password]);
+async function addNewUser(firstName, lastName, username, password, grade, major, db) {
+  console.log("calling procedure");
+  let procedure = 'call sp_add_user(?, ?, ?, ?, ?);';
+  let result = await db.query(procedure, [username, password, firstName, grade, major]);
+  console.log(result);
   return result;
 }
 

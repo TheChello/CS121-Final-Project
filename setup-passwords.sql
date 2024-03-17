@@ -27,19 +27,19 @@ DELIMITER ;
 Stores information for both admins and students, which will allow us to 
 authenticate future logins and 
 */
-CREATE TABLE user_info (
-    -- Will be generated to match whether or not user is_admin or not
-    user_id VARCHAR(28), 
-    password_hash VARCHAR(28) NOT NULL, 
-    user_name VARCHAR(20) NOT NULL,
+-- CREATE TABLE user_info (
+--     -- Will be generated to match whether or not user is_admin or not
+--     user_id VARCHAR(28), 
+--     password_hash VARCHAR(28) NOT NULL, 
+--     user_name VARCHAR(20) NOT NULL,
 
-    -- True for admin, False for students 
-    is_admin BOOLEAN NOT NULL, 
-    salt CHAR(8) NOT NULL, 
+--     -- True for admin, False for students 
+--     is_admin BOOLEAN NOT NULL, 
+--     salt CHAR(8) NOT NULL, 
 
-    UNIQUE (user_id, password_hash), 
-    PRIMARY KEY (user_id)
-);
+--     UNIQUE (user_id, password_hash), 
+--     PRIMARY KEY (user_id)
+-- );
 
 -- [Problem 1a]
 -- Adds a new user to the user_info table, using the specified password (max

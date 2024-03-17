@@ -2,7 +2,7 @@ drop database tration;
 create database tration;
 use tration;
 source setup.sql;
-source setup-passwords.sql;
+-- source setup-passwords.sql;
 source load.sql;
 
 DELIMITER !
@@ -36,6 +36,37 @@ BEGIN
   INSERT INTO students
   VALUES (SHA2(new_username, 256), grade, student_name, department_name);
 
+END !
+DELIMITER ;
+
+-- Authenticates the specified username and password against the data
+-- in the user_info table.  Returns 1 if the user appears in the table, 
+-- and the
+-- specified password hashes to the value for the user. Otherwise returns 0.
+DELIMITER !
+CREATE FUNCTION authenticate(username VARCHAR(20), password VARCHAR(20))
+RETURNS VARCHAR(280) DETERMINISTIC
+BEGIN
+  DECLARE saltt VARCHAR(8) DEFAULT NULL;
+  DECLARE pwd VARCHAR(400) DEFAULT NULL;
+  DECLARE id VARCHAR(280) DEFAULT NULL;
+
+  IF username NOT IN (SELECT user_name FROM user_info)
+  THEN RETURN 'user_name was not found';
+
+  ELSE 
+    SELECT DISTINCT salt INTO saltt FROM user_info 
+    WHERE user_info.user_name = username;
+    SELECT DISTINCT password_hash INTO pwd FROM user_info 
+    WHERE user_info.user_name = username;
+    SELECT DISTINCT user_id INTO id FROM user_info 
+    WHERE user_info.user_name = username;
+    IF SHA2(CONCAT(saltt, password), 256) = pwd 
+    AND SHA2(CONCAT(saltt, username), 256) = id
+    THEN RETURN id;
+    ELSE RETURN 'authentication failed';
+    END IF;
+  END IF;
 END !
 DELIMITER ;
 

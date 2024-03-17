@@ -29,20 +29,22 @@ AND c.comments LIKE '';
 -- Query from classes to get reviews for every class in a department
 SELECT class_id, class_name, review
 FROM classes
-WHERE class_id IN (
+WHERE class_id IN ( 
     SELECT class_id
     FROM departments
     WHERE department_name = 'Computer Science'
 );
 
 -- Query to get how many credits student has taken in each department
+-- To test 
 SELECT d.department_name, SUM(c.credits) AS total_credits
 FROM registered r NATURAL JOIN classes c NATURAL JOIN departments d
-WHERE r.student_id = '5AWIyFsxOtherCharactersToGetTo280'
+WHERE r.student_id = 'Insert_Student_ID'
 GROUP BY d.department_name;
 
 SELECT c.class_id, c.class_name, s.class_location, s.class_time, s.recitation, s.capacity
 FROM registered r NATURAL JOIN classes c NATURAL JOIN sections s 
 WHERE r.student_id = '5AWIyFs'
+
 
 

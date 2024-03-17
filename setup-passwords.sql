@@ -94,7 +94,9 @@ DELIMITER ;
 -- [Problem 1d]
 -- Create a procedure sp_change_password to generate a new salt and 
 -- change the given user's password to the given password (after salting and hashing)
--- Make sure to only allow after authenticating Yunha :). 
+-- NOTE: If used in website, this would only be used after authenticating
+-- the user, as is the practice on most websites when you want to change your
+-- password, you sign in, and then change password. 
 DELIMITER !
 CREATE PROCEDURE sp_change_password(username VARCHAR(20), 
 new_password VARCHAR(20))

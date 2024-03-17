@@ -262,46 +262,6 @@ async function registerClass(uid, class_id) {
   return rows;
 }
 
-app.post("/add-students", async (req, res, next) => {
-    let qid = req.body.qid;
-    if (!qid) {
-      res.status(CLIENT_ERR_CODE);
-      next(Error("Missing required qid."));
-    } else {
-      let db;
-      try {
-        db = await getDB();
-        let successfulResult = await removeFromQueue(qid, db);
-        db.end();
-        if (successfulResult) {
-          res.type("text");
-          res.send("Successfully removed from queue!");
-        } else {
-          res.status(CLIENT_ERR_CODE);
-          next(Error("No entry found for given qid."));
-        }
-      } catch (err) { // some other server-side error occured
-        if (db) {
-          db.end();
-        }
-        res.status(SERVER_ERR_CODE);
-        err.message = SERVER_ERROR;
-        next(err);
-      }
-    }
-  });
-
-/*---- UPDATE queries ------*/
-
-/**
- * Queries to update courses offered
- */
-
-/*---- DELETE queries ------*/
-
-/**
- * Queries to delete courses offered
- */
 
 /**
  * Login

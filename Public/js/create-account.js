@@ -26,24 +26,36 @@
      * calls a function to populate the product display.
      */
     async function signUp() {
-        let params = {firstName: qs("input[name='first-name']").value,
-        lastName: qs("input[name='last-name']").value,
-        username: qs("input[name='username']").value, 
-        password: qs("input[name='password']").value,};
+        let firstname = qs("input[name='first-name']").value;
+        let lastname = qs("input[name='last-name']").value;
+        let username = qs("input[name='username']").value;
+        let password = qs("input[name='password']").value;
+        let grade = id("grade").value;
+        let major = qs("input[name='major']").value;
 
-    try {
-        let resp = await fetch(BASE_URL + "signup", { 
-            headers: {
-                "Content-Type": "application/json",
-            },
-            method : "POST",
-            body : JSON.stringify(params)
-        });
-        resp = checkStatus(resp);
-        sessionStorage.setItem('login', 'True');
-    } catch (err) {
-        handleError(err);
-    }
+        if (!(firstname && lastname && username && password && grade)) {
+
+        }
+
+        let params = {firstName: firstname,
+            lastName: lastname,
+            username: username, 
+            password: password,
+            grade: grade,
+            major: major
+            };
+        try {
+            let resp = await fetch(BASE_URL + "signup", { 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method : "POST",
+                body : JSON.stringify(params)
+            });
+            resp = checkStatus(resp);
+        } catch (err) {
+            handleError(err);
+        }
     }
 
     /**

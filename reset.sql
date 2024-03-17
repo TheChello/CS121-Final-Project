@@ -1,4 +1,5 @@
 -- File used to run all code :). 
+SET GLOBAL local_infile = 1;
 create database tration;
 use tration;
 source setup.sql;

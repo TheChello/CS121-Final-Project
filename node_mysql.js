@@ -46,7 +46,6 @@ app.get("/departments", async (req, res) => {
 async function getDepartments(db) {
     let query = "SELECT DISTINCT department_name FROM departments";
     let rows = await db.query(query);
-    // console.log(rows);
     return rows;
   }
 
@@ -63,13 +62,11 @@ function parseDepartments(departmentRows) {
 app.get("/departments/classes", async (req, res) => {
     let db;
     try {
-      // console.log("classes");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
       let deparmentClasses = await getClassesDepartment(department, db);
       let result = JSON.parse(JSON.stringify(deparmentClasses));
-      // console.log(result.splice(1,5));
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -84,10 +81,9 @@ async function getClassesDepartment(department, db) {
     let query = "SELECT c.class_id, c.class_name, c.credits, c.term, \
     c.prereq, c.overview, p.professor_name FROM classes c \
     JOIN departments d ON c.class_id = d.class_id JOIN professors p \
-    ON c.professor_id = p.professor_id WHERE d.department_name = \
-    'Computer Science' = ?;";
+    ON c.professor_id = p.professor_id WHERE d.department_name = ? \
+    ORDER BY c.class_id;";
     let rows = await db.query(query, [department]);
-    // console.log(rows);
     return rows;
   }
 
@@ -99,13 +95,11 @@ async function getClassesDepartment(department, db) {
 app.get("/departments/professors", async (req, res) => {
     let db;
     try {
-      // console.log("professors");
       db = await getDB();
       let tmp = req.query["department"];
       let department = tmp.replaceAll("_", " ");
       let professorClasses = await getDepartmentProfessors(db, department);
       let result = JSON.parse(JSON.stringify(professorClasses));
-      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -139,7 +133,6 @@ app.get("/classes-current", async (req, res) => {
       db = await getDB();
       let currentClasses = await getDepartmentClasses(db);
       let result = JSON.parse(JSON.stringify(currentClasses));
-      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -151,7 +144,6 @@ app.get("/classes-current", async (req, res) => {
   });
 
 async function getDepartmentClasses(db) {
-    // console.log("calling function");
     let query = "SELECT c.class_id, c.class_name, s.section_id, s.class_location, s.class_time, s.recitation, s.capacity \
     FROM classes c \
     NATURAL JOIN sections s \
@@ -172,7 +164,6 @@ app.get("/departments/reviews", async (req, res) => {
       let department = tmp.replaceAll("_", " ");
       let departmentReviews = await getDepartmentReviews(db, department);
       let result = JSON.parse(JSON.stringify(departmentReviews));
-      // console.log(result);
       res.json(result);
     } catch (error) {
       res.type("text");
@@ -184,9 +175,7 @@ app.get("/departments/reviews", async (req, res) => {
   });
 
 async function getDepartmentReviews(db, department) {
-    // console.log("Calling function");
-    // console.log(department);
-    let query = "SELECT class_id, class_name, review \
+    let query = "SELECT class_id, class_name, review, rating \
     FROM classes \
     WHERE class_id IN ( \
         SELECT class_id \
@@ -204,11 +193,9 @@ app.get("/student/classes", async (req, res) => {
     let db;
     try {
       db = await getDB();
-      console.log("here")
       let userid = req.cookies.userid;
       let studentClasses = await getStudentClasses(db, userid);
       console.log(studentClasses)
-      res.json(studentClasses);
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERR_CODE).send(SERVER_ERROR);
@@ -230,11 +217,9 @@ app.get("/student/credits", async (req, res) => {
   let db;
   try {
     db = await getDB();
-    console.log("here44")
     let userid = req.cookies.userid;
     let studentCredits = await getStudentCredits(db, userid);
     let tmp = JSON.parse(JSON.stringify(studentCredits));
-    console.log(tmp);
     res.json(tmp);
   } catch (error) {
     res.type("text");
@@ -295,15 +280,8 @@ app.post("/students/register", async (req, res, next) => {
   });
 
 async function registerClass(uid, class_id, section_id, db) {
-  console.log("calling insert");
-  console.log(uid);
-  console.log(class_id);
-  console.log(section_id);
   let query = "INSERT INTO registered VALUES (?, ?, ?);";
-  // let query = "SELECT DISTINCT department_name FROM departments;"
   let result = await db.query(query, [uid, class_id, section_id]);
-  // let result = await
-  console.log(result);
   return result.affectedRows > 0;
 }
 
@@ -319,7 +297,6 @@ app.post("/login", async (req, res, next) => {
     res.status(CLIENT_ERR_CODE);
     next(Error("Missing password or username"));
   } else {
-    console.log("here");
     let db;
     try {
       db = await getDB(); // don't establish connection until we need to.
@@ -345,7 +322,6 @@ app.post("/login", async (req, res, next) => {
 });
 
 async function authenticateUser(username, password, db) {
-  console.log("In authenticate User");
   let procedure = "SELECT authenticate(?, ?);";
   let result = await db.query(procedure, [username, password]);
   return result;
@@ -355,7 +331,7 @@ app.post("/logout", async (req, res) => {
   let msg;
   if (!(res.cookie["logged_in"] != "true")) {
     // no error if the cookie doesn't exist.
-    msg = "You are not currently logged in."
+    msg = "You are not currently logged in.";
   } else {
     res.clearCookie("logged_in"); 
     res.clearCookie("userid");
@@ -397,7 +373,6 @@ app.post("/signup", checkLogin, async (req, res, next) => {
 });
 
 async function addNewUser(firstName, lastName, username, password, grade, major, db) {
-  console.log("calling procedure");
   let procedure = 'call sp_add_user(?, ?, ?, ?, ?);';
   let result = await db.query(procedure, [username, password, grade, firstName + " " +lastName, major]);
   return result;
@@ -405,7 +380,6 @@ async function addNewUser(firstName, lastName, username, password, grade, major,
 
 function checkLogin(req, res, next) {
   if (req.cookies["logged_in"] && req.cookies.userid) {
-    console.log("already logged in");
     res.type("text");
     res.send(`Welcome back to Tration!`);
   } else {
@@ -420,8 +394,7 @@ async function getDB() {
     port: "3306",          
     user: "appclient",         
     password: "clientpw",    
-    database: "tration",
-    debug: true
+    database: "tration"
   });
   return db;
 }

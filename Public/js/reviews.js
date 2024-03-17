@@ -70,8 +70,12 @@
         classDiv.appendChild(className);
 
         let reviews = gen("p");
-        reviews.textContent = classInfo.reviews;
+        reviews.textContent = "Reviews " + classInfo.review;
         classDiv.appendChild(reviews);
+
+        let rating = gen("h2");
+        rating.textContent = "Rating " + classInfo.rating;
+        classDiv.appendChild(rating);
 
         return classDiv;
     }

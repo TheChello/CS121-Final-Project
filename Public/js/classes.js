@@ -83,7 +83,7 @@
         classDiv.appendChild(description);
 
         let instructor = gen("h2");
-        instructor.textContent = classInfo.professor_id;
+        instructor.textContent = classInfo.professor_name;
         classDiv.appendChild(instructor);
 
         let keywords = gen("h2");

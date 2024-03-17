@@ -101,5 +101,3 @@ CALL sp_add_user('ZMRyJzS', 'temp', 1, 'Atalanta Yunuen', '');
 
 source setup-routines.sql;
 source grant-permissions.sql;
-
--- Node command? Yunha?

@@ -14,8 +14,19 @@ and queries.sql, is just a way to interact with the database and is not
 very crucial. As such, you will still need to run this manually to get the 
 proper results. 
 
-# Website Flow:
+# Running the Files
+## Short Commands:
+1. Run 'source-reset.sql' - 
 
+# Website Flow:
+For the website, there are four public pages that you can without logging in.
+Classes in each department, courses offered, reviews for each department, and
+courses taught by professors in each department. For the personal pages,
+you can log in on the login page, or you can add yourself as a user on Create Account
+page. Once you have logged in properly, you should see two more pages
+called MyCredits and MyClasses, which shows the classes that the logged in
+user has registered for and number of credits in each department that the student
+has taken.
 
 
 # Data for load.sql
